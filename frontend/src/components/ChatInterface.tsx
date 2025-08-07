@@ -110,10 +110,16 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       if (response.metrics_summary) {
         setShowMetrics(true);
       }
-    } catch (err: unknown) {
+    } catch (err) {
       setMessages((prev) => prev.filter((msg) => msg.id !== typingMessage.id));
       
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+      let errorMessage = 'An error occurred';
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+      
       setError(errorMessage);
 
       const errorBotMessage: Message = {
