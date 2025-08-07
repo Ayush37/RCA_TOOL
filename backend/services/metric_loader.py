@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 class MetricLoader:
     def __init__(self, base_path: str = None):
         self.base_path = base_path or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        logger.info(f"MetricLoader initialized with base_path: {self.base_path}")
         self.metric_folders = {
             'markerEvent': 'marker_event',
             'dagDetails': 'dag_metrics',
@@ -22,17 +23,25 @@ class MetricLoader:
         
         for folder, file_suffix in self.metric_folders.items():
             file_path = os.path.join(self.base_path, folder, f"{date}_{file_suffix}.json")
+            logger.info(f"Looking for file: {file_path}")
             
             if os.path.exists(file_path):
                 try:
                     with open(file_path, 'r') as f:
                         metrics[folder] = json.load(f)
-                        logger.info(f"Loaded {folder} metrics for {date}")
+                        logger.info(f"Successfully loaded {folder} metrics for {date} from {file_path}")
                 except Exception as e:
-                    logger.error(f"Error loading {folder} metrics: {str(e)}")
+                    logger.error(f"Error loading {folder} metrics from {file_path}: {str(e)}")
                     metrics[folder] = None
             else:
                 logger.warning(f"File not found: {file_path}")
+                # Also check if the directory exists
+                dir_path = os.path.join(self.base_path, folder)
+                if os.path.exists(dir_path):
+                    logger.info(f"Directory exists: {dir_path}")
+                    logger.info(f"Files in directory: {os.listdir(dir_path)}")
+                else:
+                    logger.warning(f"Directory does not exist: {dir_path}")
                 metrics[folder] = None
         
         return metrics if any(v is not None for v in metrics.values()) else None

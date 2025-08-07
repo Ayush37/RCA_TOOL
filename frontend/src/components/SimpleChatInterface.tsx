@@ -49,23 +49,29 @@ const SimpleChatInterface: React.FC<SimpleChatInterfaceProps> = ({
 
   const extractDateFromQuery = (query: string): string => {
     // Try to extract date from query
-    const datePatterns = [
-      /(\d{1,2})[- ](?:aug|august)[- ](\d{4})/i,
-      /august[- ](\d{1,2})(?:st|nd|rd|th)?[, ]*(\d{4})?/i,
-      /(\d{4})-(\d{2})-(\d{2})/,
-      /cob[- ](\d{1,2})[- ](?:aug|august)/i,
-    ];
+    const lowerQuery = query.toLowerCase();
     
-    for (const pattern of datePatterns) {
-      const match = query.match(pattern);
-      if (match) {
-        // For now, return the default date
-        // In production, parse and format the matched date
-        return '2025-08-01';
-      }
+    // Check for specific date patterns
+    if (lowerQuery.includes('aug') || lowerQuery.includes('august')) {
+      // Extract day if mentioned
+      const dayMatch = lowerQuery.match(/(\d{1,2})(?:st|nd|rd|th)?/);
+      const day = dayMatch ? dayMatch[1].padStart(2, '0') : '01';
+      
+      // Extract year if mentioned
+      const yearMatch = lowerQuery.match(/20\d{2}/);
+      const year = yearMatch ? yearMatch[0] : '2025';
+      
+      return `${year}-08-${day}`;
     }
     
-    return '2025-08-01'; // Default date
+    // Check for ISO date format YYYY-MM-DD
+    const isoMatch = query.match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (isoMatch) {
+      return isoMatch[0];
+    }
+    
+    // Default to the sample date we have data for
+    return '2025-08-01';
   };
 
   const simulateStreamingResponse = async (

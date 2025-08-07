@@ -176,6 +176,36 @@ def get_metrics(date):
         logger.error(f"Error loading metrics: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/debug/paths', methods=['GET'])
+def debug_paths():
+    """Debug endpoint to check file paths"""
+    import os
+    base_path = metric_loader.base_path
+    
+    debug_info = {
+        'base_path': base_path,
+        'current_working_dir': os.getcwd(),
+        'directories': {},
+        'expected_files': {}
+    }
+    
+    for folder, file_suffix in metric_loader.metric_folders.items():
+        dir_path = os.path.join(base_path, folder)
+        file_path = os.path.join(base_path, folder, f"2025-08-01_{file_suffix}.json")
+        
+        debug_info['directories'][folder] = {
+            'path': dir_path,
+            'exists': os.path.exists(dir_path),
+            'files': os.listdir(dir_path) if os.path.exists(dir_path) else []
+        }
+        
+        debug_info['expected_files'][folder] = {
+            'path': file_path,
+            'exists': os.path.exists(file_path)
+        }
+    
+    return jsonify(debug_info)
+
 @app.route('/api/available-dates', methods=['GET'])
 def get_available_dates():
     try:
