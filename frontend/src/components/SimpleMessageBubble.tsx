@@ -1,7 +1,10 @@
-import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Paper, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Timeline as TimelineIcon, ViewList as ListIcon } from '@mui/icons-material';
 import { Message } from '../types';
 import ReactMarkdown from 'react-markdown';
+import TimelineGraph from './TimelineGraph';
+import CompactTimeline from './CompactTimeline';
 
 interface SimpleMessageBubbleProps {
   message: Message;
@@ -9,6 +12,7 @@ interface SimpleMessageBubbleProps {
 
 const SimpleMessageBubble: React.FC<SimpleMessageBubbleProps> = ({ message }) => {
   const isUser = message.sender === 'user';
+  const [timelineView, setTimelineView] = useState<'graph' | 'compact'>('graph');
 
   return (
     <Box
@@ -155,6 +159,55 @@ const SimpleMessageBubble: React.FC<SimpleMessageBubbleProps> = ({ message }) =>
             </Box>
           )}
         </Paper>
+
+        {/* Timeline Graph - Display outside the message bubble for better visibility */}
+        {message.metadata?.timeline && message.metadata.timeline.length > 0 && !message.isTyping && !isUser && (
+          <Box sx={{ mt: 2, width: '100%' }}>
+            {/* Timeline View Toggle */}
+            <Box display="flex" justifyContent="flex-end" mb={1}>
+              <ToggleButtonGroup
+                value={timelineView}
+                exclusive
+                onChange={(e, newView) => newView && setTimelineView(newView)}
+                size="small"
+                sx={{
+                  '& .MuiToggleButton-root': {
+                    px: 2,
+                    py: 0.5,
+                    textTransform: 'none',
+                  }
+                }}
+              >
+                <ToggleButton value="graph">
+                  <TimelineIcon sx={{ fontSize: 18, mr: 0.5 }} />
+                  Graph View
+                </ToggleButton>
+                <ToggleButton value="compact">
+                  <ListIcon sx={{ fontSize: 18, mr: 0.5 }} />
+                  Compact View
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+
+            {/* Timeline Display */}
+            {timelineView === 'graph' ? (
+              <TimelineGraph 
+                events={message.metadata.timeline.filter((event: any) => 
+                  event.severity === 'critical' || event.severity === 'warning'
+                )}
+                title="Processing Timeline Analysis"
+              />
+            ) : (
+              <CompactTimeline
+                events={message.metadata.timeline.filter((event: any) => 
+                  event.severity === 'critical' || event.severity === 'warning'
+                )}
+                processingDuration={message.metadata.sla_status?.duration_hours}
+                slaHours={3}
+              />
+            )}
+          </Box>
+        )}
       </Box>
     </Box>
   );
