@@ -228,7 +228,7 @@ ANALYSIS RESULTS:
 ROOT CAUSES IDENTIFIED:
 {self._format_root_causes(context['root_causes'])}
 
-CRITICAL TIMELINE EVENTS (within processing window):
+DETAILED TIMELINE ANALYSIS FOR DERIVATIVES:
 {self._format_timeline_events(context['timeline_events'])}
 
 INFRASTRUCTURE ISSUES (detected during processing):
@@ -238,8 +238,12 @@ Summary: {', '.join([f'{service}: {count} issues' for service, count in infra_su
 RECOMMENDATIONS:
 {self._format_recommendations(analysis.get('recommendations', []))}
 
-Remember: Focus on answering the user's specific question. Don't always provide the full RCA unless they're asking for it.
-When discussing infrastructure issues, be specific about which services had problems and when they occurred.
+Remember: 
+- Focus on answering the user's specific question
+- ALWAYS include the Detailed Timeline Analysis when discussing processing issues
+- Show the cascading failure pattern with proper formatting
+- When discussing infrastructure issues, be specific about which services had problems and when they occurred
+- Use the timeline format with visual hierarchy (|, ├, └) to show relationships
 """
         return prompt
     
@@ -252,7 +256,9 @@ When discussing infrastructure issues, be specific about which services had prob
         - If they ask about something other than RCA/processing, respond appropriately
         - Don't always provide full RCA analysis unless specifically asked
         - Be conversational and helpful, not repetitive
-        - Focus on what the user actually wants to know"""
+        - Focus on what the user actually wants to know
+        - When showing timelines, use the formatted timeline provided in the context
+        - Explain the cascading failure pattern when relevant"""
     
     def _generate_fallback_response(self, analysis: Dict, user_query: str) -> str:
         if not analysis or not analysis.get('sla_status'):
@@ -271,11 +277,28 @@ When discussing infrastructure issues, be specific about which services had prob
                 if cause.get('evidence'):
                     response += f"   - Evidence: {cause['evidence']}\n"
             
-            response += "\n### Critical Timeline:\n"
+            response += "\n### Detailed Timeline Analysis for Derivatives:\n\n"
+            response += "The Cascading Failure Pattern:\n\n"
             critical_events = [e for e in analysis.get('timeline', []) if e['severity'] in ['critical', 'warning']]
-            for event in critical_events[:5]:
+            for event in critical_events[:10]:
                 time = self._format_time(event['timestamp'])
-                response += f"- **{time}** | {event['event']}: {event['details']}\n"
+                event_name = event['event']
+                details = event['details']
+                
+                response += f"**{time}** | {event_name}\n"
+                if 'marker' in event_name.lower():
+                    response += f"        | {details}\n"
+                    response += f"        └ Upstream system delay\n"
+                elif 'rds' in event_name.upper() or 'database' in event_name.lower():
+                    response += f"        ├ {details}\n"
+                    if event['severity'] == 'critical':
+                        response += f"        └ Database bottleneck from concurrent processing\n"
+                elif 'sqs' in event_name.upper():
+                    response += f"        ├ {details}\n"
+                    response += f"        └ Queue backup from slow processing\n"
+                else:
+                    response += f"        └ {details}\n"
+                response += "\n"
             
             response += "\n### Recommendations:\n"
             for rec in analysis.get('recommendations', [])[:5]:
@@ -307,9 +330,45 @@ When discussing infrastructure issues, be specific about which services had prob
         if not events:
             return "No critical events recorded"
         
-        formatted = []
-        for event in events:
-            formatted.append(f"- {event['time']}: {event['event']} - {event['details']}")
+        formatted = ["\nThe Cascading Failure Pattern:\n"]
+        
+        for i, event in enumerate(events):
+            time_str = event['time']
+            event_name = event['event']
+            details = event['details']
+            severity = event.get('severity', 'info')
+            
+            # Main event line
+            if severity == 'critical':
+                formatted.append(f"{time_str} | {event_name} (Critical Issue)")
+            elif severity == 'warning':
+                formatted.append(f"{time_str} | {event_name}")
+            else:
+                formatted.append(f"{time_str} | {event_name}")
+            
+            # Details with proper indentation
+            if 'marker' in event_name.lower() and 'delayed' in details.lower():
+                formatted.append(f"        | {details}")
+                formatted.append(f"        └ Upstream system issue")
+            elif 'dag' in event_name.lower() and 'start' in event_name.lower():
+                formatted.append(f"        └ {details}")
+            elif 'rds' in event_name.upper() or 'database' in event_name.lower():
+                formatted.append(f"        ├ {details}")
+                if 'critical' in str(severity):
+                    formatted.append(f"        └ Caused by: High concurrent queries + delayed processing")
+            elif 'sqs' in event_name.upper() or 'queue' in event_name.lower():
+                formatted.append(f"        ├ {details}")
+                formatted.append(f"        └ Queue backup caused by slow processing")
+            elif 'eks' in event_name.upper():
+                formatted.append(f"        ├ {details}")
+                formatted.append(f"        └ Resource strain from delayed batch processing")
+            elif 'complete' in event_name.lower():
+                formatted.append(f"        └ {details}")
+            else:
+                formatted.append(f"        └ {details}")
+            
+            formatted.append("")  # Empty line between events
+        
         return '\n'.join(formatted)
     
     def _format_critical_metrics(self, metrics: List[Dict]) -> str:
