@@ -84,6 +84,82 @@ def chat():
         logger.error(f"Error processing chat request: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/chat/detailed', methods=['POST'])
+def chat_detailed():
+    """Enhanced endpoint that returns step-by-step analysis details"""
+    try:
+        data = request.json
+        user_query = data.get('query', '')
+        target_date = data.get('date', '2025-08-01')
+        
+        if not user_query:
+            return jsonify({'error': 'Query is required'}), 400
+        
+        logger.info(f"Processing detailed query: {user_query} for date: {target_date}")
+        
+        # Step 1: Load metrics
+        metrics = metric_loader.load_all_metrics(target_date)
+        if not metrics:
+            return jsonify({
+                'error': f'No metrics found for date {target_date}',
+                'available_dates': metric_loader.get_available_dates()
+            }), 404
+        
+        # Step 2: Extract key information for steps
+        marker_info = None
+        if metrics.get('markerEvent'):
+            marker = metrics['markerEvent']
+            marker_info = {
+                'arrival_time': marker.get('actual_arrival_time'),
+                'expected_time': marker.get('expected_arrival_time'),
+                'delay_minutes': marker.get('delay_in_minutes', 0),
+                'product': marker.get('product')
+            }
+        
+        # Step 3: Perform analysis
+        analysis = rca_analyzer.analyze(metrics, target_date)
+        
+        # Step 4: Get AI response
+        ai_response = ai_service.generate_response(
+            analysis=analysis,
+            user_query=user_query,
+            metrics=metrics
+        )
+        
+        # Create detailed response with steps
+        response = {
+            'steps': {
+                'marker_check': {
+                    'status': 'complete',
+                    'data': marker_info
+                },
+                'dag_analysis': {
+                    'status': 'complete',
+                    'data': {
+                        'start_time': analysis['sla_status'].get('arrival_time') if analysis.get('sla_status') else None,
+                        'end_time': analysis['sla_status'].get('completion_time') if analysis.get('sla_status') else None,
+                        'duration': analysis.get('processing_duration')
+                    }
+                },
+                'infrastructure_check': {
+                    'status': 'complete',
+                    'data': analysis.get('metrics_summary')
+                }
+            },
+            'analysis': ai_response,
+            'timeline': analysis['timeline'],
+            'metrics_summary': analysis['metrics_summary'],
+            'sla_status': analysis['sla_status'],
+            'root_causes': analysis['root_causes'],
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        return jsonify(response)
+        
+    except Exception as e:
+        logger.error(f"Error processing detailed chat request: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/metrics/<date>', methods=['GET'])
 def get_metrics(date):
     try:

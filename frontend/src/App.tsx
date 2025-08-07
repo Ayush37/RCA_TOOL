@@ -2,25 +2,40 @@ import React, { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import ChatInterface from './components/ChatInterface';
+import SimpleChatInterface from './components/SimpleChatInterface';
 import { checkHealth } from './services/api';
 
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#90caf9',
+      main: '#ffffff',
     },
     secondary: {
-      main: '#f48fb1',
+      main: '#8e8ea0',
     },
     background: {
-      default: '#0a0e27',
-      paper: '#1e1e2e',
+      default: '#212121',
+      paper: '#2a2a2a',
+    },
+    text: {
+      primary: '#ececf1',
+      secondary: '#a4a4b8',
     },
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    fontSize: 15,
+    h6: {
+      fontSize: '1.1rem',
+    },
+    body1: {
+      fontSize: '0.95rem',
+      lineHeight: 1.7,
+    },
+    body2: {
+      fontSize: '0.9rem',
+    },
   },
 });
 
@@ -28,18 +43,33 @@ const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#1976d2',
+      main: '#10a37f',
     },
     secondary: {
-      main: '#dc004e',
+      main: '#666',
     },
     background: {
-      default: '#f5f5f5',
-      paper: '#ffffff',
+      default: '#ffffff',
+      paper: '#f7f7f8',
+    },
+    text: {
+      primary: '#2d2d2d',
+      secondary: '#666',
     },
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    fontSize: 15,
+    h6: {
+      fontSize: '1.1rem',
+    },
+    body1: {
+      fontSize: '0.95rem',
+      lineHeight: 1.7,
+    },
+    body2: {
+      fontSize: '0.9rem',
+    },
   },
 });
 
@@ -72,7 +102,7 @@ function App() {
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <CssBaseline />
-        <ChatInterface 
+        <SimpleChatInterface 
           darkMode={darkMode} 
           toggleDarkMode={toggleDarkMode}
           backendStatus={backendStatus}
