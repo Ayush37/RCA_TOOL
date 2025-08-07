@@ -58,6 +58,25 @@ class RCAAnalyzer:
         if not marker_data:
             return None
         
+        # Handle nested structure: readings[0].metrics["GLOBAL-OTCRegDerivatives-EOD_Close"]
+        if 'readings' in marker_data and marker_data['readings']:
+            reading = marker_data['readings'][0]
+            if 'metrics' in reading:
+                # Look for derivatives marker
+                for marker_key, marker_info in reading['metrics'].items():
+                    if 'derivatives' in marker_key.lower() or 'deriv' in marker_key.lower():
+                        return {
+                            'arrival_time': marker_info.get('actual_arrival_time'),
+                            'expected_time': marker_info.get('expected_arrival_time'),
+                            'delay_minutes': marker_info.get('arrival_delay_minutes', 0),
+                            'product': marker_key,
+                            'type': 'derivatives',
+                            'delayed': marker_info.get('arrival_delay_minutes', 0) > 0,
+                            'sla_status': marker_info.get('sla_status'),
+                            'business_impact': marker_info.get('business_impact')
+                        }
+        
+        # Fallback to direct fields if old format
         return {
             'arrival_time': marker_data.get('actual_arrival_time'),
             'expected_time': marker_data.get('expected_arrival_time'),

@@ -109,9 +109,9 @@ class AzureAIService:
     
     def _create_prompt(self, context: Dict, user_query: str, analysis: Dict) -> str:
         prompt = f"""
-You are analyzing a derivatives batch processing failure/delay. Here's the technical context:
+The user is asking: "{user_query}"
 
-USER QUERY: {user_query}
+Please answer their specific question using the following context about derivatives batch processing:
 
 ANALYSIS RESULTS:
 - SLA Status: {'BREACHED' if context['sla_breach'] else 'MET'}
@@ -131,21 +131,20 @@ INFRASTRUCTURE ISSUES (detected during processing):
 RECOMMENDATIONS:
 {self._format_recommendations(analysis.get('recommendations', []))}
 
-Please provide a clear, technical explanation of:
-1. What caused the derivatives processing delay/failure
-2. How the issues cascaded through the system
-3. The specific metrics that exceeded thresholds
-4. Key remediation steps to prevent recurrence
-
-Format your response as a conversational but technical analysis that operations teams can act upon.
+Remember: Focus on answering the user's specific question. Don't always provide the full RCA unless they're asking for it.
 """
         return prompt
     
     def _get_system_prompt(self) -> str:
-        return """You are an expert Site Reliability Engineer specializing in batch processing systems and root cause analysis. 
+        return """You are an expert Site Reliability Engineer specializing in batch processing systems and root cause analysis.
         You analyze complex distributed system failures involving AWS services (RDS, EKS, SQS) and provide clear, actionable insights.
-        Your responses should be technical but accessible, focusing on cause-and-effect relationships and practical solutions.
-        Always structure your analysis to show the cascade of failures from root cause to final impact."""
+        
+        IMPORTANT: 
+        - Answer the user's specific question directly
+        - If they ask about something other than RCA/processing, respond appropriately
+        - Don't always provide full RCA analysis unless specifically asked
+        - Be conversational and helpful, not repetitive
+        - Focus on what the user actually wants to know"""
     
     def _generate_fallback_response(self, analysis: Dict, user_query: str) -> str:
         if not analysis or not analysis.get('sla_status'):

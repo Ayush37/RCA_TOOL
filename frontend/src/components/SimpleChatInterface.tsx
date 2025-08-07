@@ -74,49 +74,77 @@ const SimpleChatInterface: React.FC<SimpleChatInterfaceProps> = ({
     return '2025-08-01';
   };
 
+  const shouldShowStreamingAnalysis = (query: string): boolean => {
+    // Only show streaming for actual RCA/processing queries
+    const processingKeywords = [
+      'processing', 'derivatives', 'batch', 'cob', 'sla', 
+      'delay', 'failure', 'status', 'rca', 'analysis'
+    ];
+    const lowerQuery = query.toLowerCase();
+    return processingKeywords.some(keyword => lowerQuery.includes(keyword));
+  };
+
   const simulateStreamingResponse = async (
     response: ChatResponse,
-    messageId: string
+    messageId: string,
+    showStreaming: boolean
   ) => {
-    const steps = [
-      { text: "✓ Checking marker event arrival time...", delay: 500 },
-      { text: `\n→ Marker arrived at ${response.sla_status?.arrival_time || 'N/A'}`, delay: 800 },
-      { text: "\n\n✓ Analyzing DAG processing metrics...", delay: 600 },
-      { text: `\n→ Processing completed at ${response.sla_status?.completion_time || 'N/A'}`, delay: 800 },
-      { text: `\n→ Duration: ${response.processing_duration} hours (SLA: 3 hours)`, delay: 700 },
-      { text: "\n\n✓ Checking infrastructure metrics...", delay: 600 },
-      { text: "\n→ Analyzing EKS, RDS, and SQS performance during processing window", delay: 1000 },
-      { text: "\n\n✓ Generating Root Cause Analysis...\n\n", delay: 800 },
-    ];
+    if (showStreaming && response.sla_status) {
+      // Show step-by-step analysis for RCA queries
+      const steps = [
+        { text: "✓ Checking marker event arrival time...", delay: 500 },
+        { text: `\n→ Marker arrived at ${response.sla_status?.arrival_time || 'N/A'}`, delay: 800 },
+        { text: "\n\n✓ Analyzing DAG processing metrics...", delay: 600 },
+        { text: `\n→ Processing completed at ${response.sla_status?.completion_time || 'N/A'}`, delay: 800 },
+        { text: `\n→ Duration: ${response.sla_status?.duration_hours || 'N/A'} hours (SLA: 3 hours)`, delay: 700 },
+        { text: "\n\n✓ Checking infrastructure metrics...", delay: 600 },
+        { text: "\n→ Analyzing EKS, RDS, and SQS performance during processing window", delay: 1000 },
+        { text: "\n\n✓ Generating Root Cause Analysis...\n\n", delay: 800 },
+      ];
 
-    let fullContent = "";
-    
-    for (const step of steps) {
-      fullContent += step.text;
+      let fullContent = "";
+      
+      for (const step of steps) {
+        fullContent += step.text;
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === messageId
+              ? { ...msg, content: fullContent, isTyping: true }
+              : msg
+          )
+        );
+        await new Promise((resolve) => setTimeout(resolve, step.delay));
+      }
+
+      // Add the final analysis
+      fullContent += response.analysis;
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === messageId
-            ? { ...msg, content: fullContent, isTyping: true }
+            ? { ...msg, content: fullContent, isTyping: false, metadata: {
+                timeline: response.timeline,
+                metrics_summary: response.metrics_summary,
+                sla_status: response.sla_status,
+                root_causes: response.root_causes,
+              }}
             : msg
         )
       );
-      await new Promise((resolve) => setTimeout(resolve, step.delay));
+    } else {
+      // Direct response for non-RCA queries
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === messageId
+            ? { ...msg, content: response.analysis, isTyping: false, metadata: {
+                timeline: response.timeline,
+                metrics_summary: response.metrics_summary,
+                sla_status: response.sla_status,
+                root_causes: response.root_causes,
+              }}
+            : msg
+        )
+      );
     }
-
-    // Add the final analysis
-    fullContent += response.analysis;
-    setMessages((prev) =>
-      prev.map((msg) =>
-        msg.id === messageId
-          ? { ...msg, content: fullContent, isTyping: false, metadata: {
-              timeline: response.timeline,
-              metrics_summary: response.metrics_summary,
-              sla_status: response.sla_status,
-              root_causes: response.root_causes,
-            }}
-          : msg
-      )
-    );
   };
 
   const handleSendMessage = async (content: string) => {
@@ -145,8 +173,11 @@ const SimpleChatInterface: React.FC<SimpleChatInterfaceProps> = ({
       const date = extractDateFromQuery(content);
       const response = await sendChatMessage(content, date);
       
+      // Check if we should show streaming analysis
+      const showStreaming = shouldShowStreamingAnalysis(content);
+      
       // Simulate streaming response
-      await simulateStreamingResponse(response, botMessageId);
+      await simulateStreamingResponse(response, botMessageId, showStreaming);
       
     } catch (err) {
       let errorMessage = 'An error occurred';

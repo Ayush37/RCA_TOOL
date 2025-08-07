@@ -71,14 +71,34 @@ class MetricLoader:
         }
         
         if metrics.get('markerEvent'):
-            marker = metrics['markerEvent']
-            extracted['marker_event'] = {
-                'arrival_time': marker.get('actual_arrival_time'),
-                'expected_time': marker.get('expected_arrival_time'),
-                'delay_minutes': marker.get('delay_in_minutes', 0),
-                'product': marker.get('product'),
-                'type': marker.get('type')
-            }
+            marker_data = metrics['markerEvent']
+            
+            # Handle nested structure
+            if 'readings' in marker_data and marker_data['readings']:
+                reading = marker_data['readings'][0]
+                if 'metrics' in reading:
+                    # Find derivatives marker
+                    for marker_key, marker_info in reading['metrics'].items():
+                        if 'derivatives' in marker_key.lower() or 'deriv' in marker_key.lower():
+                            extracted['marker_event'] = {
+                                'arrival_time': marker_info.get('actual_arrival_time'),
+                                'expected_time': marker_info.get('expected_arrival_time'),
+                                'delay_minutes': marker_info.get('arrival_delay_minutes', 0),
+                                'product': marker_key,
+                                'type': 'derivatives',
+                                'sla_status': marker_info.get('sla_status'),
+                                'business_impact': marker_info.get('business_impact')
+                            }
+                            break
+            else:
+                # Fallback to old format
+                extracted['marker_event'] = {
+                    'arrival_time': marker_data.get('actual_arrival_time'),
+                    'expected_time': marker_data.get('expected_arrival_time'),
+                    'delay_minutes': marker_data.get('delay_in_minutes', 0),
+                    'product': marker_data.get('product'),
+                    'type': marker_data.get('type')
+                }
         
         if metrics.get('dagDetails'):
             dag_data = metrics['dagDetails']
