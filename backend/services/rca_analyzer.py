@@ -1,5 +1,5 @@
 from typing import Dict, List, Any, Optional, Tuple
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import logging
 
 logger = logging.getLogger(__name__)
@@ -166,16 +166,30 @@ class RCAAnalyzer:
             arrival_str = marker_info['arrival_time']
             completion_str = dag_info['end_time']
             
-            # Handle different timestamp formats
+            # Handle different timestamp formats and ensure both are timezone-aware or naive
             if arrival_str.endswith('Z'):
                 arrival = datetime.fromisoformat(arrival_str.replace('Z', '+00:00'))
-            else:
+            elif 'T' in arrival_str and ('+' in arrival_str or arrival_str.count(':') == 3):
                 arrival = datetime.fromisoformat(arrival_str)
+            else:
+                # Assume UTC for naive datetimes
+                arrival = datetime.fromisoformat(arrival_str).replace(tzinfo=timezone.utc)
             
             if completion_str.endswith('Z'):
                 completion = datetime.fromisoformat(completion_str.replace('Z', '+00:00'))
-            else:
+            elif 'T' in completion_str and ('+' in completion_str or completion_str.count(':') == 3):
                 completion = datetime.fromisoformat(completion_str)
+            else:
+                # For naive datetime (like DAG times), assume UTC
+                completion = datetime.fromisoformat(completion_str)
+                if completion.tzinfo is None:
+                    completion = completion.replace(tzinfo=timezone.utc)
+            
+            # Ensure both have same timezone awareness
+            if arrival.tzinfo is None and completion.tzinfo is not None:
+                arrival = arrival.replace(tzinfo=timezone.utc)
+            elif arrival.tzinfo is not None and completion.tzinfo is None:
+                completion = completion.replace(tzinfo=timezone.utc)
             
             duration = completion - arrival
             duration_hours = duration.total_seconds() / 3600
@@ -374,30 +388,38 @@ class RCAAnalyzer:
     def _build_timeline(self, marker_info: Dict, dag_info: Dict, infrastructure: Dict) -> List[Dict]:
         timeline = []
         
-        if marker_info['delayed']:
+        # Add marker delay if exists
+        if marker_info and marker_info.get('delayed'):
+            if marker_info.get('expected_time'):
+                timeline.append({
+                    'timestamp': marker_info['expected_time'],
+                    'event': 'Expected Marker Time',
+                    'severity': 'warning',
+                    'details': f"{marker_info.get('product', 'Derivatives')} marker expected",
+                    'impact': 'Baseline for SLA calculation'
+                })
+        
+        # Add actual marker arrival
+        if marker_info and marker_info.get('arrival_time'):
+            severity = 'critical' if marker_info.get('delayed') else 'info'
+            delay_text = f" (delayed by {marker_info.get('delay_minutes', 0)} minutes)" if marker_info.get('delayed') else ""
             timeline.append({
-                'timestamp': marker_info['expected_time'],
-                'event': 'Marker Event Delay',
-                'severity': 'critical',
-                'details': f"{marker_info['product']} marker delayed by {marker_info['delay_minutes']} minutes",
-                'impact': 'Root cause - triggers cascade of delays'
+                'timestamp': marker_info['arrival_time'],
+                'event': 'Marker Event Arrival',
+                'severity': severity,
+                'details': f"{marker_info.get('product', 'Derivatives')} marker arrives{delay_text}",
+                'impact': 'Processing can begin' if not marker_info.get('delayed') else 'Late start impacts SLA'
             })
         
-        timeline.append({
-            'timestamp': marker_info['arrival_time'],
-            'event': 'Marker Event Arrival',
-            'severity': 'info',
-            'details': f"{marker_info['product']} marker arrives",
-            'impact': 'Processing can begin'
-        })
-        
-        timeline.append({
-            'timestamp': dag_info['start_time'],
-            'event': 'DAG Processing Starts',
-            'severity': 'info',
-            'details': f"Started processing {dag_info['total_dags']} derivatives DAG runs",
-            'impact': 'Derivatives processing initiated'
-        })
+        # Add DAG processing start
+        if dag_info and dag_info.get('start_time'):
+            timeline.append({
+                'timestamp': dag_info['start_time'],
+                'event': 'DAG Processing Starts',
+                'severity': 'info',
+                'details': f"Started processing {dag_info.get('total_dags', 0)} derivatives DAG runs",
+                'impact': 'Derivatives processing initiated'
+            })
         
         # Add failed DAG runs to timeline if any
         for dag in dag_info.get('dag_details', []):
