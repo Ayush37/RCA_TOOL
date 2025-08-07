@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "service": "eks",
+  "date": "2025-08-01",
+  "environment": "prod",
+  "readings": [
+    {
+      "collection_timestamp": "2025-08-01T00:00:00Z",
+      "product": "eps-eks-prod",
+      "metrics": {
+        "cluster_cpu_utilization": {
+          "value": 72.5,
+          "unit": "percentage",
+          "threshold_warning": 80,
+          "threshold_critical": 90
+        },
+        "cluster_memory_utilization": {
+          "value": 64.3,
+          "unit": "percentage",
+          "threshold_warning": 80,
+          "threshold_critical": 90
+        },
+        "node_unhealthy_count": {
+          "value": 0,
+          "unit": "count",
+          "threshold_warning": 1,
+          "threshold_critical": 2
+        }
+      }
+    },
+    {
+      "collection_timestamp": "2025-08-01T00:00:00Z",
+      "product": "airflow-scheduler-678d7b4f6f-d52qb",
+      "metrics": {
+        "pod_cpu_utilization": {
+          "value": 53.7,
+          "unit": "percentage",
+          "threshold_warning": 85,
+          "threshold_critical": 95
+        },
+        "pod_memory_utilization": {
+          "value": 69.4,
+          "unit": "percentage",
+          "threshold_warning": 85,
+          "threshold_critical": 95
+        },
+        "pod_restart_count": {
+          "value": 1,
+          "unit": "count",
+          "threshold_warning": 5,
+          "threshold_critical": 10
+        },
+        "airflow_dag_processing_time": {
+          "value": 161.0,
+          "unit": "seconds",
+          "threshold_warning": 30,
+          "threshold_critical": 60
+        },
+        "airflow_task_queue_length": {
+          "value": 105,
+          "unit": "count",
+          "threshold_warning": 200,
+          "threshold_critical": 500
+        }
+      }
+    },
+    {
+      "collection_timestamp": "2025-08-01T00:00:00Z",
+      "product": "eps-dataprocessor-workflow-86f7c84f5f-wxmxj",
+      "metrics": {
+        "pod_cpu_utilization": {
+          "value": 45.1,
+          "unit": "percentage",
+          "threshold_warning": 85,
+          "threshold_critical": 95
+        },
+        "pod_memory_utilization": {
+          "value": 57.7,
+          "unit": "percentage",
+          "threshold_warning": 85,
+          "threshold_critical": 95
+        },
+        "pod_restart_count": {
+          "value": 1,
+          "unit": "count",
+          "threshold_warning": 5,
+          "threshold_critical": 10
+        },
+        "data_processing_latency": {
+          "value": 32.0,
+          "unit": "seconds",
+          "threshold_warning": 120,
+          "threshold_critical": 300
+        }
+      }
+    }
+  ]
+}

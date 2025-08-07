@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "service": "business",
+  "date": "2025-08-01",
+  "environment": "prod",
+  "domain": "markers",
+  "readings": [
+    {
+      "collection_timestamp": "2025-08-01T06:45:00Z",
+      "metrics": {
+        "GLOBAL-OTCRegDerivatives-EOD_Close": {
+          "actual_arrival_time": "2025-08-01T07:15:00Z",
+          "expected_arrival_time": "2025-08-01T06:45:00Z",
+          "sla_threshold_minutes": 45,
+          "arrival_delay_minutes": 30,
+          "sla_status": "BREACHED",
+          "business_impact": "high",
+          "upstream_source": "OTC_Derivatives_System",
+          "data_category": "derivatives"
+        }
+      }
+    }
+  ],
+  "summary": {
+    "total_markers": 8,
+    "on_time_count": 3,
+    "early_count": 1,
+    "breached_count": 4,
+    "critical_breaches": 1,
+    "high_impact_breaches": 2,
+    "overall_sla_compliance": 50.0
+  }
+}

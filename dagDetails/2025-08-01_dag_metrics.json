@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "service": "airflow",
+  "date": "2025-08-01",
+  "environment": "prod",
+  "readings": [
+    {
+      "collection_timestamp": "2025-08-03T21:30:55Z",
+      "product": "derivatives",
+      "entries": [
+        {
+          "id": "523778",
+          "dag_id": "sls_aws_details_extended_translation_workflow_v4",
+          "execution_date": "2025-08-01 15:07:01.015998",
+          "state": "success",
+          "run_id": "FGW_sls_aws_details_extended_translation_workflow_v4_2025-01-31_AWS_CRI_OTC_DERIV_GLOBAL_1754060820426",
+          "end_date": "2025-08-01 15:41:48.558433",
+          "start_date": "2025-08-01 15:07:04.361812",
+          "run_type": "manual",
+          "last_scheduling_decision": "2025-08-01 15:41:48.552969"
+        },
+        {
+          "id": "523750",
+          "dag_id": "sls_aws_details_extended_translation_workflow_v4",
+          "execution_date": "2025-08-01 13:40:05.003316",
+          "state": "failed",
+          "run_id": "FGW_sls_aws_details_extended_translation_workflow_v4_2025-01-31_AWS_OTC_DERIV_AGG_GLOBAL_1754055604423",
+          "end_date": "2025-08-01 13:43:31.920675",
+          "start_date": "2025-08-01 13:40:07.708661",
+          "run_type": "manual",
+          "last_scheduling_decision": "2025-08-01 13:43:31.915348"
+        },
+        {
+          "id": "475540",
+          "dag_id": "sls_aws_details_extended_translation_workflow_v4",
+          "execution_date": "2025-08-01 13:50:37.478349",
+          "state": "success",
+          "run_id": "FGW_sls_aws_details_extended_translation_workflow_v4_2025-01-31_AWS_DERIV_PB_SYNTHETIC_GLOBAL_1748526636818",
+          "end_date": "2025-08-01 13:32:13.416785",
+          "start_date": "2025-08-01 13:28:53.809701",
+          "run_type": "manual",
+          "last_scheduling_decision": "2025-08-01 13:32:13.411241"
+        },
+        {
+          "id": "523719",
+          "dag_id": "sls_aws_details_extended_translation_workflow_v4",
+          "execution_date": "2025-08-01 12:58:50.497252",
+          "state": "success",
+          "run_id": "FGW_sls_aws_details_extended_translation_workflow_v4_2025-01-31_AWS_OTC_DERIV_AGG_GLOBAL_1754053129927",
+          "end_date": "2025-08-01 13:00:14.792775",
+          "start_date": "2025-08-01 12:58:51.886598",
+          "run_type": "manual",
+          "last_scheduling_decision": "2025-08-01 13:00:14.787683"
+        },
+        {
+          "id": "523693",
+          "dag_id": "sls_aws_details_extended_translation_workflow_v4",
+          "execution_date": "2025-08-01 11:57:07.156674",
+          "state": "success",
+          "run_id": "FGW_sls_aws_details_extended_translation_workflow_v4_2025-01-31_AWS_OTC_DERIV_AGG_GLOBAL_1754049426613",
+          "end_date": "2025-08-01 12:51:01.835091",
+          "start_date": "2025-08-01 12:46:46.614416",
+          "run_type": "manual",
+          "last_scheduling_decision": "2025-08-01 12:51:01.829926"
+        },
+        {
+          "id": "523667",
+          "dag_id": "sls_aws_details_extended_translation_workflow_v4",
+          "execution_date": "2025-08-01 11:23:14.528691",
+          "state": "success",
+          "run_id": "FGW_sls_aws_details_extended_translation_workflow_v4_2025-01-31_AWS_OTC_DERIV_AGG_GLOBAL_1754047393870",
+          "end_date": "2025-08-01 11:25:45.671435",
+          "start_date": "2025-08-01 11:23:16.218625",
+          "run_type": "manual",
+          "last_scheduling_decision": "2025-08-01 11:25:45.665757"
+        }
+      ]
+    }
+  ]
+}

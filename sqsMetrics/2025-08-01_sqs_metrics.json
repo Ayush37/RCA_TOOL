@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "service": "sqs",
+  "date": "2025-08-01",
+  "environment": "prod",
+  "readings": [
+    {
+      "collection_timestamp": "2025-08-01T00:00:00Z",
+      "product": "107923-ecqp-1079213-lrss-v2-job-notification-prod",
+      "metrics": {
+        "approximate_age_of_oldest_message": {
+          "value": 133.0,
+          "unit": "seconds",
+          "threshold_warning": 300,
+          "threshold_critical": 600
+        },
+        "approximate_number_of_messages_visible": {
+          "value": 1351,
+          "unit": "count",
+          "threshold_warning": 500,
+          "threshold_critical": 1000
+        },
+        "approximate_number_of_messages_not_visible": {
+          "value": 5,
+          "unit": "count",
+          "threshold_warning": 100,
+          "threshold_critical": 200
+        },
+        "number_of_messages_sent": {
+          "value": 1125,
+          "unit": "count",
+          "threshold_warning": 2000,
+          "threshold_critical": 5000
+        },
+        "number_of_messages_received": {
+          "value": 1779,
+          "unit": "count",
+          "threshold_warning": 1800,
+          "threshold_critical": 4500
+        },
+        "number_of_messages_deleted": {
+          "value": 1646,
+          "unit": "count",
+          "threshold_warning": 1800,
+          "threshold_critical": 4500
+        },
+        "number_of_empty_receives": {
+          "value": 19,
+          "unit": "count",
+          "threshold_warning": 50,
+          "threshold_critical": 100
+        },
+        "sent_message_size": {
+          "value": 79877.4,
+          "unit": "bytes",
+          "threshold_warning": 200000,
+          "threshold_critical": 250000
+        },
+        "approximate_number_of_messages_delayed": {
+          "value": 5,
+          "unit": "count",
+          "threshold_warning": 50,
+          "threshold_critical": 100
+        },
+        "message_throughput_per_second": {
+          "value": 78.6,
+          "unit": "count",
+          "threshold_warning": 100,
+          "threshold_critical": 200
+        },
+        "failed_message_count": {
+          "value": 7,
+          "unit": "count",
+          "threshold_warning": 10,
+          "threshold_critical": 25
+        },
+        "throttled_requests": {
+          "value": 2,
+          "unit": "count",
+          "threshold_warning": 5,
+          "threshold_critical": 15
+        }
+      }
+    }
+  ]
+}

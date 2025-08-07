@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0",
+  "service": "rds",
+  "date": "2025-08-01",
+  "environment": "prod",
+  "readings": [
+    {
+      "collection_timestamp": "2025-08-01T00:00:00Z",
+      "product": "fgwrds-cluster",
+      "metrics": {
+        "select_latency": {
+          "value": 16.4,
+          "unit": "milliseconds",
+          "threshold_warning": 50,
+          "threshold_critical": 100
+        },
+        "cpu_utilization": {
+          "value": 89.6,
+          "unit": "percentage",
+          "threshold_warning": 90,
+          "threshold_critical": 95
+        },
+        "database_connections": {
+          "value": 165.6,
+          "unit": "count",
+          "threshold_warning": 200,
+          "threshold_critical": 250
+        },
+        "commit_latency": {
+          "value": 42.5,
+          "unit": "milliseconds",
+          "threshold_warning": 25,
+          "threshold_critical": 50
+        },
+        "delete_latency": {
+          "value": 20.2,
+          "unit": "milliseconds",
+          "threshold_warning": 30,
+          "threshold_critical": 60
+        },
+        "dml_latency": {
+          "value": 19.3,
+          "unit": "milliseconds",
+          "threshold_warning": 40,
+          "threshold_critical": 80
+        },
+        "insert_latency": {
+          "value": 26.3,
+          "unit": "milliseconds",
+          "threshold_warning": 35,
+          "threshold_critical": 70
+        },
+        "read_latency": {
+          "value": 13.7,
+          "unit": "milliseconds",
+          "threshold_warning": 30,
+          "threshold_critical": 60
+        },
+        "write_latency": {
+          "value": 16.4,
+          "unit": "milliseconds",
+          "threshold_warning": 35,
+          "threshold_critical": 75
+        },
+        "free_storage_space": {
+          "value": 51.3,
+          "unit": "gigabytes",
+          "threshold_warning": 25,
+          "threshold_critical": 10
+        },
+        "io_wait_time": {
+          "value": 7.3,
+          "unit": "milliseconds",
+          "threshold_warning": 20,
+          "threshold_critical": 40
+        },
+        "read_iops": {
+          "value": 3781.9,
+          "unit": "count",
+          "threshold_warning": 5000,
+          "threshold_critical": 7500
+        },
+        "write_iops": {
+          "value": 3287.6,
+          "unit": "count",
+          "threshold_warning": 4000,
+          "threshold_critical": 6000
+        },
+        "deadlocks": {
+          "value": 2.3,
+          "unit": "count",
+          "threshold_warning": 5,
+          "threshold_critical": 10
+        },
+        "buffer_cache_hit_ratio": {
+          "value": 93.5,
+          "unit": "percentage",
+          "threshold_warning": 90,
+          "threshold_critical": 80
+        },
+        "replica_lag": {
+          "value": 11.0,
+          "unit": "seconds",
+          "threshold_warning": 30,
+          "threshold_critical": 60
+        }
+      }
+    }
+  ]
+}
