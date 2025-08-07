@@ -5,8 +5,15 @@ echo "Setting up RCA Analysis Chatbot..."
 # Backend setup
 echo "Setting up Flask backend..."
 cd backend
+
+# Create virtual environment
 python3 -m venv venv
 source venv/bin/activate
+
+# Upgrade pip first to avoid compatibility issues
+pip install --upgrade pip setuptools wheel
+
+# Install requirements
 pip install -r requirements.txt
 
 # Copy environment file
