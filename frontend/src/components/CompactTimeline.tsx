@@ -46,12 +46,33 @@ const CompactTimeline: React.FC<CompactTimelineProps> = ({
 
   const formatTime = (timestamp: string): string => {
     try {
-      const date = new Date(timestamp.replace('Z', '+00:00'));
-      return date.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: true 
-      });
+      // Handle different timestamp formats
+      let date: Date;
+      
+      if (timestamp.includes('T')) {
+        // ISO format with time
+        if (timestamp.endsWith('Z')) {
+          // UTC timestamp like "2025-08-01T07:15:00Z"
+          date = new Date(timestamp);
+        } else if (timestamp.includes('+') || timestamp.includes('-')) {
+          // Timestamp with timezone offset
+          date = new Date(timestamp);
+        } else {
+          // Assume local time if no timezone info
+          date = new Date(timestamp + 'Z'); // Treat as UTC
+        }
+      } else {
+        // Format like "2025-08-01 15:41:48.558433" - treat as local/UTC
+        date = new Date(timestamp.replace(' ', 'T') + 'Z');
+      }
+      
+      // Format in UTC time (since our data is in UTC)
+      const hours = date.getUTCHours();
+      const minutes = date.getUTCMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const displayHours = hours % 12 || 12;
+      
+      return `${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
     } catch {
       return timestamp;
     }
