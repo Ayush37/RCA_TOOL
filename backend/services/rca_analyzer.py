@@ -251,34 +251,55 @@ class RCAAnalyzer:
         thresholds = {
             'cpu_critical': 90, 'cpu_warning': 80,
             'memory_critical': 90, 'memory_warning': 80,
-            'restarts_critical': 10, 'restarts_warning': 5
+            'node_unhealthy_critical': 2, 'node_unhealthy_warning': 1
         }
         
-        for pod in eks_data.get('pods', []):
-            if not self._is_within_timeframe(pod.get('timestamp'), start_time, end_time):
+        # Handle new nested structure: readings[].collection_timestamp and readings[].metrics
+        for reading in eks_data.get('readings', []):
+            timestamp = reading.get('collection_timestamp')
+            if not self._is_within_timeframe(timestamp, start_time, end_time):
                 continue
             
-            cpu = pod.get('cpu_usage_percentage', 0)
-            memory = pod.get('memory_usage_percentage', 0)
-            restarts = pod.get('restart_count', 0)
+            metrics = reading.get('metrics', {})
+            cpu = metrics.get('cluster_cpu_utilization', {}).get('value', 0)
+            memory = metrics.get('cluster_memory_utilization', {}).get('value', 0)
+            unhealthy_nodes = metrics.get('node_unhealthy_count', {}).get('value', 0)
             
-            if cpu > thresholds['cpu_critical'] or memory > thresholds['memory_critical']:
+            critical_issues = []
+            warning_issues = []
+            
+            if cpu > thresholds['cpu_critical']:
+                critical_issues.append(f"CPU {cpu}%")
+            elif cpu > thresholds['cpu_warning']:
+                warning_issues.append(f"CPU {cpu}%")
+            
+            if memory > thresholds['memory_critical']:
+                critical_issues.append(f"Memory {memory}%")
+            elif memory > thresholds['memory_warning']:
+                warning_issues.append(f"Memory {memory}%")
+            
+            if unhealthy_nodes >= thresholds['node_unhealthy_critical']:
+                critical_issues.append(f"{unhealthy_nodes} unhealthy nodes")
+            elif unhealthy_nodes >= thresholds['node_unhealthy_warning']:
+                warning_issues.append(f"{unhealthy_nodes} unhealthy nodes")
+            
+            if critical_issues:
                 issues.append({
-                    'timestamp': pod.get('timestamp'),
+                    'timestamp': timestamp,
                     'service': 'EKS',
                     'severity': 'critical',
                     'type': 'resource_exhaustion',
-                    'details': f"Pod {pod.get('pod_name')}: CPU {cpu}%, Memory {memory}%, Restarts {restarts}",
-                    'metrics': {'cpu': cpu, 'memory': memory, 'restarts': restarts}
+                    'details': f"Cluster critical: {', '.join(critical_issues)}",
+                    'metrics': {'cpu': cpu, 'memory': memory, 'unhealthy_nodes': unhealthy_nodes}
                 })
-            elif cpu > thresholds['cpu_warning'] or memory > thresholds['memory_warning']:
+            elif warning_issues:
                 issues.append({
-                    'timestamp': pod.get('timestamp'),
+                    'timestamp': timestamp,
                     'service': 'EKS',
                     'severity': 'warning',
                     'type': 'high_resource_usage',
-                    'details': f"Pod {pod.get('pod_name')}: CPU {cpu}%, Memory {memory}%",
-                    'metrics': {'cpu': cpu, 'memory': memory, 'restarts': restarts}
+                    'details': f"Cluster warning: {', '.join(warning_issues)}",
+                    'metrics': {'cpu': cpu, 'memory': memory, 'unhealthy_nodes': unhealthy_nodes}
                 })
         
         return issues
@@ -292,14 +313,17 @@ class RCAAnalyzer:
             'select_latency_critical': 100, 'select_latency_warning': 50
         }
         
-        for metric in rds_data.get('database_metrics', []):
-            if not self._is_within_timeframe(metric.get('timestamp'), start_time, end_time):
+        # Handle new nested structure: readings[].collection_timestamp and readings[].metrics
+        for reading in rds_data.get('readings', []):
+            timestamp = reading.get('collection_timestamp')
+            if not self._is_within_timeframe(timestamp, start_time, end_time):
                 continue
             
-            cpu = metric.get('cpu_utilization', 0)
-            connections = metric.get('database_connections', 0)
-            commit_latency = metric.get('commit_latency', 0)
-            select_latency = metric.get('select_latency', 0)
+            metrics = reading.get('metrics', {})
+            cpu = metrics.get('cpu_utilization', {}).get('value', 0)
+            connections = metrics.get('database_connections', {}).get('value', 0)
+            commit_latency = metrics.get('commit_latency', {}).get('value', 0)
+            select_latency = metrics.get('select_latency', {}).get('value', 0)
             
             critical_issues = []
             warning_issues = []
@@ -321,7 +345,7 @@ class RCAAnalyzer:
             
             if critical_issues:
                 issues.append({
-                    'timestamp': metric.get('timestamp'),
+                    'timestamp': timestamp,
                     'service': 'RDS',
                     'severity': 'critical',
                     'type': 'database_performance',
@@ -335,7 +359,7 @@ class RCAAnalyzer:
                 })
             elif warning_issues:
                 issues.append({
-                    'timestamp': metric.get('timestamp'),
+                    'timestamp': timestamp,
                     'service': 'RDS',
                     'severity': 'warning',
                     'type': 'database_degradation',
@@ -357,30 +381,47 @@ class RCAAnalyzer:
             'visible_critical': 1000, 'visible_warning': 500
         }
         
-        for metric in sqs_data.get('queue_metrics', []):
-            if not self._is_within_timeframe(metric.get('timestamp'), start_time, end_time):
+        # Handle new nested structure: readings[].collection_timestamp and readings[].metrics
+        for reading in sqs_data.get('readings', []):
+            timestamp = reading.get('collection_timestamp')
+            if not self._is_within_timeframe(timestamp, start_time, end_time):
                 continue
             
-            age = metric.get('approximate_age_of_oldest_message', 0)
-            visible = metric.get('approximate_number_of_messages_visible', 0)
+            metrics = reading.get('metrics', {})
+            age = metrics.get('approximate_age_of_oldest_message', {}).get('value', 0)
+            visible = metrics.get('approximate_number_of_messages_visible', {}).get('value', 0)
+            queue_name = reading.get('product', 'queue')
             
-            if age > thresholds['age_critical'] or visible > thresholds['visible_critical']:
+            critical_issues = []
+            warning_issues = []
+            
+            if age > thresholds['age_critical']:
+                critical_issues.append(f"message age {age}s")
+            elif age > thresholds['age_warning']:
+                warning_issues.append(f"message age {age}s")
+            
+            if visible > thresholds['visible_critical']:
+                critical_issues.append(f"{visible} visible messages")
+            elif visible > thresholds['visible_warning']:
+                warning_issues.append(f"{visible} visible messages")
+            
+            if critical_issues:
                 issues.append({
-                    'timestamp': metric.get('timestamp'),
+                    'timestamp': timestamp,
                     'service': 'SQS',
                     'severity': 'critical',
                     'type': 'queue_backup',
-                    'details': f"Queue {metric.get('queue_name')}: {visible} messages, oldest {age}s",
-                    'metrics': {'message_age': age, 'visible_messages': visible}
+                    'details': f"Queue critical: {', '.join(critical_issues)}",
+                    'metrics': {'message_age': age, 'visible_messages': visible, 'queue': queue_name}
                 })
-            elif age > thresholds['age_warning'] or visible > thresholds['visible_warning']:
+            elif warning_issues:
                 issues.append({
-                    'timestamp': metric.get('timestamp'),
+                    'timestamp': timestamp,
                     'service': 'SQS',
                     'severity': 'warning',
                     'type': 'queue_delay',
-                    'details': f"Queue {metric.get('queue_name')}: {visible} messages, oldest {age}s",
-                    'metrics': {'message_age': age, 'visible_messages': visible}
+                    'details': f"Queue warning: {', '.join(warning_issues)}",
+                    'metrics': {'message_age': age, 'visible_messages': visible, 'queue': queue_name}
                 })
         
         return issues
@@ -569,23 +610,51 @@ class RCAAnalyzer:
             start_str = start_time.strip()
             end_str = end_time.strip()
             
-            # Handle 'Z' timezone indicator
+            # Parse timestamp with timezone handling
             if ts_str.endswith('Z'):
                 ts = datetime.fromisoformat(ts_str.replace('Z', '+00:00'))
+            elif 'T' in ts_str and ('+' in ts_str or ts_str.count(':') >= 3):
+                ts = datetime.fromisoformat(ts_str)
             else:
                 ts = datetime.fromisoformat(ts_str)
+                if ts.tzinfo is None:
+                    ts = ts.replace(tzinfo=timezone.utc)
             
+            # Parse start time
             if start_str.endswith('Z'):
                 start = datetime.fromisoformat(start_str.replace('Z', '+00:00'))
+            elif 'T' in start_str and ('+' in start_str or start_str.count(':') >= 3):
+                start = datetime.fromisoformat(start_str)
             else:
                 start = datetime.fromisoformat(start_str)
+                if start.tzinfo is None:
+                    start = start.replace(tzinfo=timezone.utc)
             
+            # Parse end time
             if end_str.endswith('Z'):
                 end = datetime.fromisoformat(end_str.replace('Z', '+00:00'))
+            elif 'T' in end_str and ('+' in end_str or end_str.count(':') >= 3):
+                end = datetime.fromisoformat(end_str)
             else:
                 end = datetime.fromisoformat(end_str)
+                if end.tzinfo is None:
+                    end = end.replace(tzinfo=timezone.utc)
             
-            return start <= ts <= end
+            # Ensure all have same timezone awareness
+            if ts.tzinfo is None and (start.tzinfo is not None or end.tzinfo is not None):
+                ts = ts.replace(tzinfo=timezone.utc)
+            elif ts.tzinfo is not None and start.tzinfo is None:
+                start = start.replace(tzinfo=timezone.utc)
+            elif ts.tzinfo is not None and end.tzinfo is None:
+                end = end.replace(tzinfo=timezone.utc)
+            
+            result = start <= ts <= end
+            if result:
+                logger.debug(f"Timestamp {ts_str} is within timeframe [{start_str}, {end_str}]")
+            return result
         except Exception as e:
             logger.warning(f"Error comparing timestamps: {e}")
+            logger.warning(f"  timestamp: {timestamp}")
+            logger.warning(f"  start_time: {start_time}")
+            logger.warning(f"  end_time: {end_time}")
             return False

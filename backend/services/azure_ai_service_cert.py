@@ -206,6 +206,14 @@ class AzureAIServiceCert:
         return context
     
     def _create_prompt(self, context: Dict, user_query: str, analysis: Dict) -> str:
+        # Count infrastructure issues for better context
+        infra_summary = {}
+        for metric in context['critical_metrics']:
+            service = metric.get('service', 'Unknown')
+            if service not in infra_summary:
+                infra_summary[service] = 0
+            infra_summary[service] += 1
+        
         prompt = f"""
 The user is asking: "{user_query}"
 
@@ -225,11 +233,13 @@ CRITICAL TIMELINE EVENTS (within processing window):
 
 INFRASTRUCTURE ISSUES (detected during processing):
 {self._format_critical_metrics(context['critical_metrics'])}
+Summary: {', '.join([f'{service}: {count} issues' for service, count in infra_summary.items()]) if infra_summary else 'No critical infrastructure issues detected'}
 
 RECOMMENDATIONS:
 {self._format_recommendations(analysis.get('recommendations', []))}
 
 Remember: Focus on answering the user's specific question. Don't always provide the full RCA unless they're asking for it.
+When discussing infrastructure issues, be specific about which services had problems and when they occurred.
 """
         return prompt
     
