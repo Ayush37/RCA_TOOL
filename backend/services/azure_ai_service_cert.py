@@ -78,9 +78,10 @@ class AzureAIServiceCert:
             self.access_token = self.get_access_token()
             
             # Initialize Azure OpenAI client
+            # Note: API key is still required even with certificate auth (as per sample)
             logger.debug("Initializing OpenAI client...")
             self.client = AzureOpenAI(
-                api_key=os.getenv("AZURE_OPENAI_API_KEY", "placeholder-api-key"),  # Not used with token auth
+                api_key=os.getenv("AZURE_OPENAI_API_KEY", "placeholder-api-key"),
                 azure_endpoint=self.endpoint,
                 api_version=self.api_version,
                 default_headers={

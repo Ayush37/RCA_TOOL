@@ -52,6 +52,7 @@ AZURE_TENANT_ID=your_tenant_id
 AZURE_CERT_PATH=cert/apim-exp.pem
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 AZURE_OPENAI_DEPLOYMENT=gpt-4o-2024-08-06
+AZURE_OPENAI_API_KEY=placeholder-api-key  # Required but can be placeholder
 USER_SID=1792420  # Optional
 ```
 
