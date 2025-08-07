@@ -81,10 +81,16 @@ class RCAAnalyzer:
                         duration = None
                         if entry.get('start_date') and entry.get('end_date'):
                             try:
-                                start = datetime.fromisoformat(entry['start_date'].replace('Z', '+00:00'))
-                                end = datetime.fromisoformat(entry['end_date'].replace('Z', '+00:00'))
+                                # Handle timestamps without timezone info (from DAG data)
+                                start_str = entry['start_date'].strip()
+                                end_str = entry['end_date'].strip()
+                                
+                                # Parse the datetime strings (format: "2025-08-01 15:07:04.361812")
+                                start = datetime.fromisoformat(start_str)
+                                end = datetime.fromisoformat(end_str)
                                 duration = (end - start).total_seconds()
-                            except:
+                            except Exception as e:
+                                logger.warning(f"Error parsing DAG dates: {e}")
                                 pass
                         
                         derivatives_dags.append({
@@ -112,8 +118,45 @@ class RCAAnalyzer:
     
     def _check_sla_breach(self, marker_info: Dict, dag_info: Dict) -> Dict:
         try:
-            arrival = datetime.fromisoformat(marker_info['arrival_time'].replace('Z', '+00:00'))
-            completion = datetime.fromisoformat(dag_info['end_time'].replace('Z', '+00:00'))
+            # Check if we have the required timestamps
+            if not marker_info or not marker_info.get('arrival_time'):
+                logger.warning("Missing marker arrival time")
+                return {
+                    'breached': False,
+                    'duration_hours': 0,
+                    'expected_hours': self.sla_hours,
+                    'excess_hours': 0,
+                    'arrival_time': None,
+                    'completion_time': None,
+                    'error': 'Missing marker arrival time'
+                }
+            
+            if not dag_info or not dag_info.get('end_time'):
+                logger.warning("Missing DAG end time")
+                return {
+                    'breached': False,
+                    'duration_hours': 0,
+                    'expected_hours': self.sla_hours,
+                    'excess_hours': 0,
+                    'arrival_time': marker_info.get('arrival_time'),
+                    'completion_time': None,
+                    'error': 'Missing DAG completion time'
+                }
+            
+            # Parse timestamps
+            arrival_str = marker_info['arrival_time']
+            completion_str = dag_info['end_time']
+            
+            # Handle different timestamp formats
+            if arrival_str.endswith('Z'):
+                arrival = datetime.fromisoformat(arrival_str.replace('Z', '+00:00'))
+            else:
+                arrival = datetime.fromisoformat(arrival_str)
+            
+            if completion_str.endswith('Z'):
+                completion = datetime.fromisoformat(completion_str.replace('Z', '+00:00'))
+            else:
+                completion = datetime.fromisoformat(completion_str)
             
             duration = completion - arrival
             duration_hours = duration.total_seconds() / 3600
@@ -128,9 +171,15 @@ class RCAAnalyzer:
             }
         except Exception as e:
             logger.error(f"Error checking SLA breach: {str(e)}")
+            logger.error(f"Marker info: {marker_info}")
+            logger.error(f"DAG info: {dag_info}")
             return {
                 'breached': False,
                 'duration_hours': 0,
+                'expected_hours': self.sla_hours,
+                'excess_hours': 0,
+                'arrival_time': marker_info.get('arrival_time') if marker_info else None,
+                'completion_time': dag_info.get('end_time') if dag_info else None,
                 'error': str(e)
             }
     
@@ -471,10 +520,31 @@ class RCAAnalyzer:
         return summary
     
     def _is_within_timeframe(self, timestamp: str, start_time: str, end_time: str) -> bool:
+        if not timestamp or not start_time or not end_time:
+            return False
         try:
-            ts = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
-            start = datetime.fromisoformat(start_time.replace('Z', '+00:00'))
-            end = datetime.fromisoformat(end_time.replace('Z', '+00:00'))
+            # Parse timestamps, handling both with and without 'Z'
+            ts_str = timestamp.strip()
+            start_str = start_time.strip()
+            end_str = end_time.strip()
+            
+            # Handle 'Z' timezone indicator
+            if ts_str.endswith('Z'):
+                ts = datetime.fromisoformat(ts_str.replace('Z', '+00:00'))
+            else:
+                ts = datetime.fromisoformat(ts_str)
+            
+            if start_str.endswith('Z'):
+                start = datetime.fromisoformat(start_str.replace('Z', '+00:00'))
+            else:
+                start = datetime.fromisoformat(start_str)
+            
+            if end_str.endswith('Z'):
+                end = datetime.fromisoformat(end_str.replace('Z', '+00:00'))
+            else:
+                end = datetime.fromisoformat(end_str)
+            
             return start <= ts <= end
-        except:
+        except Exception as e:
+            logger.warning(f"Error comparing timestamps: {e}")
             return False

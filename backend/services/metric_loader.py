@@ -90,10 +90,15 @@ class MetricLoader:
                             duration = None
                             if entry.get('start_date') and entry.get('end_date'):
                                 try:
-                                    start = datetime.fromisoformat(entry['start_date'].replace('Z', '+00:00'))
-                                    end = datetime.fromisoformat(entry['end_date'].replace('Z', '+00:00'))
+                                    # Handle timestamps without timezone info
+                                    start_str = entry['start_date'].strip()
+                                    end_str = entry['end_date'].strip()
+                                    
+                                    start = datetime.fromisoformat(start_str)
+                                    end = datetime.fromisoformat(end_str)
                                     duration = (end - start).total_seconds()
-                                except:
+                                except Exception as e:
+                                    logger.warning(f"Error calculating duration: {e}")
                                     pass
                             
                             extracted['dag_processing'].append({
