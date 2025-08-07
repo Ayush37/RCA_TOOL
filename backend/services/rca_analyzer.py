@@ -273,11 +273,7 @@ class RCAAnalyzer:
         # Handle new nested structure: readings[].collection_timestamp and readings[].metrics
         for reading in eks_data.get('readings', []):
             timestamp = reading.get('collection_timestamp')
-            # For infrastructure metrics, if we only have daily snapshots, use them
-            # regardless of exact time since they represent the day's state
-            # Only skip if timestamp is from a different day
-            if timestamp and not timestamp.startswith(start_time[:10]):  # Check date part only
-                logger.debug(f"Skipping EKS metric from different day: {timestamp}")
+            if not self._is_within_timeframe(timestamp, start_time, end_time):
                 continue
             
             metrics = reading.get('metrics', {})
@@ -336,11 +332,7 @@ class RCAAnalyzer:
         # Handle new nested structure: readings[].collection_timestamp and readings[].metrics
         for reading in rds_data.get('readings', []):
             timestamp = reading.get('collection_timestamp')
-            # For infrastructure metrics, if we only have daily snapshots, use them
-            # regardless of exact time since they represent the day's state
-            # Only skip if timestamp is from a different day
-            if timestamp and not timestamp.startswith(start_time[:10]):  # Check date part only
-                logger.debug(f"Skipping RDS metric from different day: {timestamp}")
+            if not self._is_within_timeframe(timestamp, start_time, end_time):
                 continue
             
             metrics = reading.get('metrics', {})
@@ -408,11 +400,7 @@ class RCAAnalyzer:
         # Handle new nested structure: readings[].collection_timestamp and readings[].metrics
         for reading in sqs_data.get('readings', []):
             timestamp = reading.get('collection_timestamp')
-            # For infrastructure metrics, if we only have daily snapshots, use them
-            # regardless of exact time since they represent the day's state
-            # Only skip if timestamp is from a different day
-            if timestamp and not timestamp.startswith(start_time[:10]):  # Check date part only
-                logger.debug(f"Skipping SQS metric from different day: {timestamp}")
+            if not self._is_within_timeframe(timestamp, start_time, end_time):
                 continue
             
             metrics = reading.get('metrics', {})
@@ -507,24 +495,9 @@ class RCAAnalyzer:
             infrastructure.get('sqs', [])
         )
         
-        # For infrastructure issues with midnight timestamps, place them during processing
-        # to show they were ongoing issues during the batch run
         for issue in sorted(all_issues, key=lambda x: x['timestamp']):
-            # If timestamp is at midnight, adjust to show during processing window
-            issue_timestamp = issue['timestamp']
-            if issue_timestamp and issue_timestamp.endswith('T00:00:00Z'):
-                # Place infrastructure issues at the midpoint of processing
-                if marker_info and dag_info:
-                    # Use a timestamp during processing (e.g., 2 hours after start)
-                    try:
-                        marker_time = datetime.fromisoformat(marker_info['arrival_time'].replace('Z', '+00:00'))
-                        adjusted_time = marker_time + timedelta(hours=2)
-                        issue_timestamp = adjusted_time.isoformat().replace('+00:00', 'Z')
-                    except:
-                        pass
-            
             timeline.append({
-                'timestamp': issue_timestamp,
+                'timestamp': issue['timestamp'],
                 'event': f"{issue['service']} {issue['type'].replace('_', ' ').title()}",
                 'severity': issue['severity'],
                 'details': issue['details'],
