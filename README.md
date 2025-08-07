@@ -23,7 +23,7 @@ Azure OpenAI API + Local Metric Processing
 
 ## Prerequisites
 
-- Python 3.8+
+- Python 3.8+ (Python 3.11 recommended, Python 3.12+ use `setup-py312.sh`)
 - Node.js 16+
 - Azure OpenAI API credentials
 
@@ -32,8 +32,14 @@ Azure OpenAI API + Local Metric Processing
 ### 1. Clone and Setup
 
 ```bash
-# Run the setup script
+# For Python 3.11 and earlier
 ./setup.sh
+
+# For Python 3.12+
+./setup-py312.sh
+
+# If you encounter issues
+./setup-alt.sh
 ```
 
 ### 2. Configure Azure OpenAI

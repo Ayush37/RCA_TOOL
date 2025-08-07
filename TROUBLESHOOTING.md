@@ -2,6 +2,41 @@
 
 ## Setup Issues
 
+### Python 3.12+ Compatibility Error
+If you encounter an error like:
+```
+module pkgutil has no attribute ImpImporter
+```
+
+This is due to Python 3.12 removing deprecated features. 
+
+**Solutions:**
+
+1. **Use the Python 3.12 setup script:**
+   ```bash
+   ./setup-py312.sh
+   ```
+
+2. **Or manually install with Python 3.12 compatible versions:**
+   ```bash
+   cd backend
+   rm -rf venv  # Remove old virtual environment
+   python3 -m venv venv --upgrade-deps
+   source venv/bin/activate
+   pip install -r requirements-py312.txt
+   ```
+
+3. **Alternative: Use Python 3.11 or earlier:**
+   ```bash
+   # On Ubuntu/Debian
+   sudo apt install python3.11 python3.11-venv
+   python3.11 -m venv venv
+   
+   # On macOS with Homebrew
+   brew install python@3.11
+   python3.11 -m venv venv
+   ```
+
 ### Meson Build Error
 If you encounter an error like:
 ```
