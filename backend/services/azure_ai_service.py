@@ -181,7 +181,10 @@ Remember:
             
             response += "\n### Detailed Timeline Analysis for Derivatives:\n\n"
             response += "The Cascading Failure Pattern:\n\n"
-            critical_events = [e for e in analysis.get('timeline', []) if e['severity'] in ['critical', 'warning']]
+            all_timeline = analysis.get('timeline', [])
+            # Sort timeline events in ascending order
+            sorted_timeline = sorted(all_timeline, key=lambda x: x.get('timestamp', ''))
+            critical_events = [e for e in sorted_timeline if e['severity'] in ['critical', 'warning']]
             for event in critical_events[:10]:
                 time = self._format_time(event['timestamp'])
                 event_name = event['event']
@@ -234,7 +237,10 @@ Remember:
         
         formatted = ["\nThe Cascading Failure Pattern:\n"]
         
-        for i, event in enumerate(events):
+        # Sort events by timestamp in ascending order
+        sorted_events = sorted(events, key=lambda x: x.get('timestamp', ''))
+        
+        for i, event in enumerate(sorted_events):
             time_str = event['time']
             event_name = event['event']
             details = event['details']

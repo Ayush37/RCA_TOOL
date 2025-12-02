@@ -40,6 +40,13 @@ const CompactTimeline: React.FC<CompactTimelineProps> = ({
   const [expanded, setExpanded] = useState(false);
   const theme = useTheme();
 
+  // Sort events in ascending chronological order
+  const sortedEvents = [...events].sort((a, b) => {
+    const dateA = new Date(a.timestamp).getTime();
+    const dateB = new Date(b.timestamp).getTime();
+    return dateA - dateB;
+  });
+
   const criticalCount = events.filter(e => e.severity === 'critical').length;
   const warningCount = events.filter(e => e.severity === 'warning').length;
   const slaBreached = processingDuration > slaHours;
@@ -185,7 +192,7 @@ const CompactTimeline: React.FC<CompactTimelineProps> = ({
       {/* Expandable Timeline Details */}
       <Collapse in={expanded}>
         <Box sx={{ p: 2, pt: 0 }}>
-          {events.map((event, index) => (
+          {sortedEvents.map((event, index) => (
             <Box
               key={index}
               sx={{
@@ -197,7 +204,7 @@ const CompactTimeline: React.FC<CompactTimelineProps> = ({
               }}
             >
               {/* Timeline connector */}
-              {index < events.length - 1 && (
+              {index < sortedEvents.length - 1 && (
                 <Box
                   sx={{
                     position: 'absolute',

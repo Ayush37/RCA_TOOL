@@ -151,6 +151,13 @@ const TimelineGraph: React.FC<TimelineGraphProps> = ({ events, title = "Processi
     return null;
   }
 
+  // Sort events in ascending chronological order
+  const sortedEvents = [...events].sort((a, b) => {
+    const dateA = new Date(a.timestamp).getTime();
+    const dateB = new Date(b.timestamp).getTime();
+    return dateA - dateB;
+  });
+
   return (
     <Paper 
       elevation={0}
@@ -178,7 +185,7 @@ const TimelineGraph: React.FC<TimelineGraphProps> = ({ events, title = "Processi
       </Box>
 
       <Timeline position="alternate">
-        {events.map((event, index) => (
+        {sortedEvents.map((event, index) => (
           <TimelineItem key={index}>
             <TimelineOppositeContent
               sx={{ m: 'auto 0' }}
@@ -216,8 +223,8 @@ const TimelineGraph: React.FC<TimelineGraphProps> = ({ events, title = "Processi
               </Tooltip>
               <TimelineConnector 
                 sx={{ 
-                  bgcolor: index === events.length - 1 ? 'transparent' : 'grey.300',
-                  opacity: index === events.length - 1 ? 0 : 1,
+                  bgcolor: index === sortedEvents.length - 1 ? 'transparent' : 'grey.300',
+                  opacity: index === sortedEvents.length - 1 ? 0 : 1,
                 }} 
               />
             </TimelineSeparator>
