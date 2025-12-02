@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Box,
-  Container,
   Paper,
   IconButton,
   Typography,
-  CircularProgress,
 } from '@mui/material';
 import {
   DarkMode,
@@ -206,20 +204,41 @@ const SimpleChatInterface: React.FC<SimpleChatInterfaceProps> = ({
   };
 
   return (
-    <Container maxWidth="md" sx={{ height: '100vh', py: 2 }}>
+    <Box
+      sx={{
+        height: '100vh',
+        px: { xs: 2, sm: 4, md: 6 },
+        py: 2,
+        maxWidth: '1400px',
+        mx: 'auto',
+      }}
+    >
       <Box display="flex" flexDirection="column" height="100%">
-        {/* Minimal Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-          <Typography variant="h6" fontWeight={600} color="text.primary">
-            RCA Analysis
-          </Typography>
-          <Box display="flex" gap={1} alignItems="center">
+        {/* Header */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+          pb={2}
+          borderBottom="1px solid"
+          borderColor="divider"
+        >
+          <Box>
+            <Typography variant="h5" fontWeight={700} color="text.primary">
+              RCA Analysis Tool
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Derivatives Batch Processing Monitor
+            </Typography>
+          </Box>
+          <Box display="flex" gap={2} alignItems="center">
             {!backendStatus && (
-              <Typography variant="caption" color="error">
+              <Typography variant="caption" color="error" sx={{ px: 1, py: 0.5, bgcolor: 'error.50', borderRadius: 1 }}>
                 Backend disconnected
               </Typography>
             )}
-            <IconButton size="small" onClick={toggleDarkMode}>
+            <IconButton size="small" onClick={toggleDarkMode} sx={{ border: '1px solid', borderColor: 'divider' }}>
               {darkMode ? <LightMode /> : <DarkMode />}
             </IconButton>
           </Box>
@@ -247,7 +266,7 @@ const SimpleChatInterface: React.FC<SimpleChatInterfaceProps> = ({
           />
         </Paper>
       </Box>
-    </Container>
+    </Box>
   );
 };
 
