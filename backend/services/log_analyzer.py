@@ -19,7 +19,7 @@ class LogAnalyzer:
 
     def load_failure_logs(self, date: str) -> Dict:
         """
-        Load and analyze stderr.gz log file for a given date.
+        Load and analyze stderr.gz or stderr.txt log file for a given date.
         Returns extracted error context with surrounding lines.
         """
         result = {
@@ -30,18 +30,30 @@ class LogAnalyzer:
             'total_errors_found': 0
         }
 
-        log_file_path = os.path.join(self.base_path, self.log_folder, f"{date}_stderr.gz")
-        result['file_path'] = log_file_path
+        # Try .gz first, then .txt
+        gz_path = os.path.join(self.base_path, self.log_folder, f"{date}_stderr.gz")
+        txt_path = os.path.join(self.base_path, self.log_folder, f"{date}_stderr.txt")
 
-        logger.info(f"Looking for log file: {log_file_path}")
+        log_file_path = None
+        is_gzip = False
 
-        if not os.path.exists(log_file_path):
-            logger.warning(f"Log file not found: {log_file_path}")
+        if os.path.exists(gz_path):
+            log_file_path = gz_path
+            is_gzip = True
+            logger.info(f"Found gzip log file: {log_file_path}")
+        elif os.path.exists(txt_path):
+            log_file_path = txt_path
+            is_gzip = False
+            logger.info(f"Found text log file: {log_file_path}")
+        else:
+            logger.warning(f"Log file not found: {gz_path} or {txt_path}")
             result['summary'] = "No error logs available for this failure"
             return result
 
+        result['file_path'] = log_file_path
+
         try:
-            lines = self._read_gzip_file(log_file_path)
+            lines = self._read_log_file(log_file_path, is_gzip)
             if not lines:
                 result['summary'] = "Log file is empty"
                 return result
@@ -64,14 +76,18 @@ class LogAnalyzer:
             result['summary'] = f"Error reading log file: {str(e)}"
             return result
 
-    def _read_gzip_file(self, file_path: str) -> List[str]:
-        """Read and decompress a gzip file, returning lines."""
+    def _read_log_file(self, file_path: str, is_gzip: bool = False) -> List[str]:
+        """Read a log file (gzip or plain text), returning lines."""
         lines = []
         try:
-            with gzip.open(file_path, 'rt', encoding='utf-8', errors='replace') as f:
-                lines = f.readlines()
+            if is_gzip:
+                with gzip.open(file_path, 'rt', encoding='utf-8', errors='replace') as f:
+                    lines = f.readlines()
+            else:
+                with open(file_path, 'r', encoding='utf-8', errors='replace') as f:
+                    lines = f.readlines()
         except Exception as e:
-            logger.error(f"Error decompressing file: {str(e)}")
+            logger.error(f"Error reading file: {str(e)}")
             raise
         return lines
 
