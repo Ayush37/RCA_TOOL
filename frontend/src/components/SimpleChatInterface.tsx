@@ -126,6 +126,7 @@ const SimpleChatInterface: React.FC<SimpleChatInterfaceProps> = ({
                 metrics_summary: response.metrics_summary,
                 sla_status: response.sla_status,
                 root_causes: response.root_causes,
+                failure_logs: response.failure_logs,
               }}
             : msg
         )
@@ -140,6 +141,7 @@ const SimpleChatInterface: React.FC<SimpleChatInterfaceProps> = ({
                 metrics_summary: response.metrics_summary,
                 sla_status: response.sla_status,
                 root_causes: response.root_causes,
+                failure_logs: response.failure_logs,
               }}
             : msg
         )

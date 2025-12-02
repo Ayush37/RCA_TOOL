@@ -5,6 +5,7 @@ import { Message } from '../types';
 import ReactMarkdown from 'react-markdown';
 import TimelineGraph from './TimelineGraph';
 import CompactTimeline from './CompactTimeline';
+import FailureLogAnalysis from './FailureLogAnalysis';
 
 interface SimpleMessageBubbleProps {
   message: Message;
@@ -191,15 +192,15 @@ const SimpleMessageBubble: React.FC<SimpleMessageBubbleProps> = ({ message }) =>
 
             {/* Timeline Display */}
             {timelineView === 'graph' ? (
-              <TimelineGraph 
-                events={message.metadata.timeline.filter((event: any) => 
+              <TimelineGraph
+                events={message.metadata.timeline.filter((event: any) =>
                   event.severity === 'critical' || event.severity === 'warning'
                 )}
                 title="Processing Timeline Analysis"
               />
             ) : (
               <CompactTimeline
-                events={message.metadata.timeline.filter((event: any) => 
+                events={message.metadata.timeline.filter((event: any) =>
                   event.severity === 'critical' || event.severity === 'warning'
                 )}
                 processingDuration={message.metadata.sla_status?.duration_hours}
@@ -207,6 +208,11 @@ const SimpleMessageBubble: React.FC<SimpleMessageBubbleProps> = ({ message }) =>
               />
             )}
           </Box>
+        )}
+
+        {/* Failure Log Analysis - Display when failure logs are present */}
+        {message.metadata?.failure_logs && !message.isTyping && !isUser && (
+          <FailureLogAnalysis failureLogs={message.metadata.failure_logs} />
         )}
       </Box>
     </Box>

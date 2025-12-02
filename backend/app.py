@@ -75,9 +75,10 @@ def chat():
             'metrics_summary': analysis['metrics_summary'],
             'sla_status': analysis['sla_status'],
             'root_causes': analysis['root_causes'],
+            'failure_logs': analysis.get('failure_logs'),
             'timestamp': datetime.now().isoformat()
         }
-        
+
         return jsonify(response)
         
     except Exception as e:
@@ -151,6 +152,7 @@ def chat_detailed():
             'metrics_summary': analysis['metrics_summary'],
             'sla_status': analysis['sla_status'],
             'root_causes': analysis['root_causes'],
+            'failure_logs': analysis.get('failure_logs'),
             'timestamp': datetime.now().isoformat()
         }
         

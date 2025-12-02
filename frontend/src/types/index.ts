@@ -12,6 +12,28 @@ export interface MessageMetadata {
   metrics_summary?: MetricsSummary;
   sla_status?: SLAStatus;
   root_causes?: RootCause[];
+  failure_logs?: FailureLogs;
+}
+
+export interface FailureLogs {
+  available: boolean;
+  file_path: string | null;
+  error_contexts: ErrorContext[];
+  summary: string | null;
+  total_errors_found: number;
+}
+
+export interface ErrorContext {
+  error_line_number: number;
+  error_message: string;
+  context: LogLine[];
+  error_type: string;
+}
+
+export interface LogLine {
+  line_number: number;
+  content: string;
+  is_error_line: boolean;
 }
 
 export interface TimelineEvent {
@@ -54,6 +76,7 @@ export interface ChatResponse {
   metrics_summary: MetricsSummary;
   sla_status: SLAStatus;
   root_causes: RootCause[];
+  failure_logs?: FailureLogs;
   timestamp: string;
 }
 

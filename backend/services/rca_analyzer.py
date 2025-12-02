@@ -1,12 +1,14 @@
 from typing import Dict, List, Any, Optional, Tuple
 from datetime import datetime, timedelta, timezone
 import logging
+from services.log_analyzer import LogAnalyzer
 
 logger = logging.getLogger(__name__)
 
 class RCAAnalyzer:
     def __init__(self):
         self.sla_hours = 3
+        self.log_analyzer = LogAnalyzer()
         
     def analyze(self, metrics: Dict[str, Any], target_date: str) -> Dict[str, Any]:
         analysis = {
@@ -16,7 +18,8 @@ class RCAAnalyzer:
             'timeline': [],
             'root_causes': [],
             'metrics_summary': {},
-            'recommendations': []
+            'recommendations': [],
+            'failure_logs': None
         }
         
         marker_info = self._analyze_marker_event(metrics.get('markerEvent'))
@@ -57,7 +60,14 @@ class RCAAnalyzer:
                 analysis['root_causes'] = root_causes
                 
                 analysis['recommendations'] = self._generate_recommendations(root_causes)
-        
+
+        # Check for failed DAGs and load failure logs if any
+        if dag_info and dag_info.get('failed_dags', 0) > 0:
+            logger.info(f"Detected {dag_info['failed_dags']} failed DAG(s), loading failure logs...")
+            failure_logs = self.log_analyzer.load_failure_logs(target_date)
+            analysis['failure_logs'] = failure_logs
+            logger.info(f"Failure logs loaded: available={failure_logs.get('available', False)}")
+
         analysis['metrics_summary'] = self._create_metrics_summary(metrics)
         
         return analysis
