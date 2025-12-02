@@ -16,6 +16,16 @@ class LogAnalyzer:
             re.compile(r'\bERROR\b', re.IGNORECASE),
             re.compile(r'\bEXCEPTION\b', re.IGNORECASE),
         ]
+        self.warning_patterns = [
+            re.compile(r'\bWARN(?:ING)?\b', re.IGNORECASE),
+            re.compile(r'\bCRITICAL\b', re.IGNORECASE),
+            re.compile(r'\bFATAL\b', re.IGNORECASE),
+        ]
+        self.stack_trace_patterns = [
+            re.compile(r'^\s+at\s+', re.IGNORECASE),
+            re.compile(r'Traceback', re.IGNORECASE),
+            re.compile(r'File ".*", line \d+', re.IGNORECASE),
+        ]
 
     def load_failure_logs(self, date: str) -> Dict:
         """
@@ -27,7 +37,16 @@ class LogAnalyzer:
             'file_path': None,
             'error_contexts': [],
             'summary': None,
-            'total_errors_found': 0
+            'total_errors_found': 0,
+            'warnings_found': 0,
+            'stack_traces': [],
+            'log_metadata': {
+                'total_lines': 0,
+                'first_timestamp': None,
+                'last_timestamp': None,
+                'error_timeline': []
+            },
+            'ai_analysis': None  # Will be populated by LLM
         }
 
         # Try .gz first, then .txt
@@ -59,16 +78,32 @@ class LogAnalyzer:
                 return result
 
             result['available'] = True
+            result['log_metadata']['total_lines'] = len(lines)
+
+            # Extract timestamps from first and last lines
+            result['log_metadata']['first_timestamp'] = self._extract_timestamp(lines[0]) if lines else None
+            result['log_metadata']['last_timestamp'] = self._extract_timestamp(lines[-1]) if lines else None
+
+            # Extract error contexts
             error_contexts = self._extract_error_contexts(lines)
             result['error_contexts'] = error_contexts
             result['total_errors_found'] = len(error_contexts)
+
+            # Extract warnings count
+            result['warnings_found'] = self._count_warnings(lines)
+
+            # Extract stack traces
+            result['stack_traces'] = self._extract_stack_traces(lines)
+
+            # Build error timeline
+            result['log_metadata']['error_timeline'] = self._build_error_timeline(lines)
 
             if error_contexts:
                 result['summary'] = self._generate_summary(error_contexts)
             else:
                 result['summary'] = "No ERROR or EXCEPTION patterns found in log file"
 
-            logger.info(f"Found {len(error_contexts)} error contexts in log file")
+            logger.info(f"Found {len(error_contexts)} error contexts, {result['warnings_found']} warnings in log file")
             return result
 
         except Exception as e:
@@ -200,3 +235,145 @@ class LogAnalyzer:
             summary_parts.append(f"Primary error: {primary_error}")
 
         return " | ".join(summary_parts)
+
+    def _extract_timestamp(self, line: str) -> Optional[str]:
+        """Extract timestamp from a log line."""
+        # Match common timestamp formats
+        patterns = [
+            r'(\d{4}-\d{2}-\d{2}[\sT]\d{2}:\d{2}:\d{2}[.,]?\d*)',
+            r'(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2}:\d{2})',
+        ]
+        for pattern in patterns:
+            match = re.search(pattern, line)
+            if match:
+                return match.group(1)
+        return None
+
+    def _count_warnings(self, lines: List[str]) -> int:
+        """Count warning lines in the log."""
+        count = 0
+        for line in lines:
+            if any(pattern.search(line) for pattern in self.warning_patterns):
+                count += 1
+        return count
+
+    def _extract_stack_traces(self, lines: List[str]) -> List[Dict]:
+        """Extract stack trace blocks from the log."""
+        stack_traces = []
+        current_trace = []
+        in_trace = False
+
+        for i, line in enumerate(lines):
+            is_trace_line = any(pattern.search(line) for pattern in self.stack_trace_patterns)
+            is_error_line = any(pattern.search(line) for pattern in self.error_patterns)
+
+            if is_error_line or (is_trace_line and not in_trace):
+                if current_trace:
+                    stack_traces.append({
+                        'start_line': current_trace[0]['line_number'],
+                        'lines': current_trace
+                    })
+                current_trace = []
+                in_trace = True
+
+            if in_trace:
+                if is_trace_line or is_error_line or line.strip().startswith('at '):
+                    current_trace.append({
+                        'line_number': i + 1,
+                        'content': line.rstrip()
+                    })
+                elif current_trace and not line.strip():
+                    # Empty line might continue trace
+                    pass
+                else:
+                    # End of trace
+                    if current_trace:
+                        stack_traces.append({
+                            'start_line': current_trace[0]['line_number'],
+                            'lines': current_trace
+                        })
+                    current_trace = []
+                    in_trace = False
+
+        # Don't forget the last trace
+        if current_trace:
+            stack_traces.append({
+                'start_line': current_trace[0]['line_number'],
+                'lines': current_trace
+            })
+
+        return stack_traces[:3]  # Limit to first 3 stack traces
+
+    def _build_error_timeline(self, lines: List[str]) -> List[Dict]:
+        """Build a timeline of errors and warnings."""
+        timeline = []
+
+        for i, line in enumerate(lines):
+            timestamp = self._extract_timestamp(line)
+            is_error = any(pattern.search(line) for pattern in self.error_patterns)
+            is_warning = any(pattern.search(line) for pattern in self.warning_patterns)
+
+            if is_error or is_warning:
+                timeline.append({
+                    'line_number': i + 1,
+                    'timestamp': timestamp,
+                    'level': 'error' if is_error else 'warning',
+                    'message': self._extract_error_message(line)[:200]
+                })
+
+        return timeline[:20]  # Limit to first 20 events
+
+    def get_log_content_for_llm(self, failure_logs: Dict) -> str:
+        """
+        Prepare log content for LLM analysis.
+        Returns a condensed version of the logs suitable for AI analysis.
+        """
+        if not failure_logs.get('available'):
+            return "No log file available for analysis."
+
+        parts = []
+
+        # Add metadata
+        metadata = failure_logs.get('log_metadata', {})
+        parts.append(f"=== LOG FILE ANALYSIS ===")
+        parts.append(f"Total lines: {metadata.get('total_lines', 'N/A')}")
+        parts.append(f"Time range: {metadata.get('first_timestamp', 'N/A')} to {metadata.get('last_timestamp', 'N/A')}")
+        parts.append(f"Errors found: {failure_logs.get('total_errors_found', 0)}")
+        parts.append(f"Warnings found: {failure_logs.get('warnings_found', 0)}")
+        parts.append("")
+
+        # Add error timeline
+        error_timeline = metadata.get('error_timeline', [])
+        if error_timeline:
+            parts.append("=== ERROR/WARNING TIMELINE ===")
+            for event in error_timeline:
+                level = event.get('level', 'unknown').upper()
+                ts = event.get('timestamp', 'N/A')
+                msg = event.get('message', '')
+                parts.append(f"[{ts}] {level}: {msg}")
+            parts.append("")
+
+        # Add error contexts with surrounding lines
+        error_contexts = failure_logs.get('error_contexts', [])
+        if error_contexts:
+            parts.append("=== DETAILED ERROR CONTEXTS ===")
+            for i, ctx in enumerate(error_contexts, 1):
+                parts.append(f"\n--- Error #{i}: {ctx.get('error_type', 'Unknown')} (Line {ctx.get('error_line_number', 'N/A')}) ---")
+                parts.append(f"Error message: {ctx.get('error_message', 'N/A')}")
+                parts.append("\nContext (surrounding lines):")
+                for line_info in ctx.get('context', []):
+                    prefix = ">>>" if line_info.get('is_error_line') else "   "
+                    parts.append(f"{prefix} {line_info.get('line_number', '')}: {line_info.get('content', '')}")
+            parts.append("")
+
+        # Add stack traces
+        stack_traces = failure_logs.get('stack_traces', [])
+        if stack_traces:
+            parts.append("=== STACK TRACES ===")
+            for i, trace in enumerate(stack_traces, 1):
+                parts.append(f"\n--- Stack Trace #{i} ---")
+                for line_info in trace.get('lines', []):
+                    parts.append(f"  {line_info.get('content', '')}")
+            parts.append("")
+
+        return "\n".join(parts)

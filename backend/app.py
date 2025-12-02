@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import logging
 from services.metric_loader import MetricLoader
 from services.rca_analyzer import RCAAnalyzer
+from services.log_analyzer import LogAnalyzer
 
 load_dotenv()
 
@@ -29,6 +30,7 @@ else:
 
 metric_loader = MetricLoader()
 rca_analyzer = RCAAnalyzer()
+log_analyzer = LogAnalyzer()
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -62,20 +64,29 @@ def chat():
             }), 404
         
         analysis = rca_analyzer.analyze(metrics, target_date)
-        
+
+        # If there are failure logs, perform AI analysis on them
+        failure_logs = analysis.get('failure_logs')
+        if failure_logs and failure_logs.get('available'):
+            logger.info("Performing AI analysis on failure logs...")
+            log_content = log_analyzer.get_log_content_for_llm(failure_logs)
+            ai_log_analysis = ai_service.analyze_failure_logs(log_content)
+            failure_logs['ai_analysis'] = ai_log_analysis
+            logger.info("AI log analysis complete")
+
         ai_response = ai_service.generate_response(
             analysis=analysis,
             user_query=user_query,
             metrics=metrics
         )
-        
+
         response = {
             'analysis': ai_response,
             'timeline': analysis['timeline'],
             'metrics_summary': analysis['metrics_summary'],
             'sla_status': analysis['sla_status'],
             'root_causes': analysis['root_causes'],
-            'failure_logs': analysis.get('failure_logs'),
+            'failure_logs': failure_logs,
             'timestamp': datetime.now().isoformat()
         }
 
@@ -119,14 +130,23 @@ def chat_detailed():
         
         # Step 3: Perform analysis
         analysis = rca_analyzer.analyze(metrics, target_date)
-        
+
+        # If there are failure logs, perform AI analysis on them
+        failure_logs = analysis.get('failure_logs')
+        if failure_logs and failure_logs.get('available'):
+            logger.info("Performing AI analysis on failure logs...")
+            log_content = log_analyzer.get_log_content_for_llm(failure_logs)
+            ai_log_analysis = ai_service.analyze_failure_logs(log_content)
+            failure_logs['ai_analysis'] = ai_log_analysis
+            logger.info("AI log analysis complete")
+
         # Step 4: Get AI response
         ai_response = ai_service.generate_response(
             analysis=analysis,
             user_query=user_query,
             metrics=metrics
         )
-        
+
         # Create detailed response with steps
         response = {
             'steps': {
@@ -152,7 +172,7 @@ def chat_detailed():
             'metrics_summary': analysis['metrics_summary'],
             'sla_status': analysis['sla_status'],
             'root_causes': analysis['root_causes'],
-            'failure_logs': analysis.get('failure_logs'),
+            'failure_logs': failure_logs,
             'timestamp': datetime.now().isoformat()
         }
         

@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import TimelineGraph from './TimelineGraph';
 import CompactTimeline from './CompactTimeline';
 import FailureLogAnalysis from './FailureLogAnalysis';
+import AILogInsights from './AILogInsights';
 
 interface SimpleMessageBubbleProps {
   message: Message;
@@ -208,6 +209,11 @@ const SimpleMessageBubble: React.FC<SimpleMessageBubbleProps> = ({ message }) =>
               />
             )}
           </Box>
+        )}
+
+        {/* AI Log Insights - Display when AI analysis is available */}
+        {message.metadata?.failure_logs?.ai_analysis && !message.isTyping && !isUser && (
+          <AILogInsights failureLogs={message.metadata.failure_logs} />
         )}
 
         {/* Failure Log Analysis - Display when failure logs are present */}

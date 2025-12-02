@@ -282,11 +282,111 @@ Remember:
     def _format_critical_metrics(self, metrics: List[Dict]) -> str:
         if not metrics:
             return "No critical infrastructure issues detected"
-        
+
         formatted = []
         for metric in metrics:
             formatted.append(f"- {metric['service']}: {metric['issue']}")
         return '\n'.join(formatted)
+
+    def analyze_failure_logs(self, log_content: str) -> Dict:
+        """
+        Use LLM to analyze failure logs and provide insights.
+        Returns a structured analysis with root cause, suggestions, and patterns.
+        """
+        if not self.client:
+            return self._generate_fallback_log_analysis(log_content)
+
+        try:
+            prompt = f"""Analyze the following application failure logs and provide a detailed technical analysis.
+
+{log_content}
+
+Please provide your analysis in the following JSON format (respond ONLY with valid JSON, no markdown):
+{{
+    "root_cause": "A clear, concise explanation of the root cause of the failure",
+    "error_chain": ["Step 1 of how the error propagated", "Step 2...", "Step 3..."],
+    "affected_components": ["component1", "component2"],
+    "suggested_fixes": [
+        {{
+            "priority": "high|medium|low",
+            "action": "Specific action to take",
+            "rationale": "Why this fix will help"
+        }}
+    ],
+    "patterns_detected": ["Pattern 1 noticed in the logs", "Pattern 2..."],
+    "severity_assessment": "critical|high|medium|low",
+    "summary": "A 2-3 sentence executive summary of the failure and recommended immediate action"
+}}
+"""
+
+            response = self.client.chat.completions.create(
+                model=self.deployment,
+                messages=[
+                    {"role": "system", "content": """You are an expert DevOps engineer and log analyst.
+Analyze application logs to identify root causes, patterns, and provide actionable recommendations.
+Focus on:
+1. Identifying the primary root cause
+2. Understanding the error propagation chain
+3. Suggesting specific, actionable fixes
+4. Detecting patterns that might indicate systemic issues
+Always respond with valid JSON only, no markdown formatting."""},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.3,
+                max_tokens=1500
+            )
+
+            response_text = response.choices[0].message.content.strip()
+
+            # Try to parse JSON response
+            import json
+            try:
+                # Remove markdown code blocks if present
+                if response_text.startswith('```'):
+                    response_text = response_text.split('```')[1]
+                    if response_text.startswith('json'):
+                        response_text = response_text[4:]
+                analysis = json.loads(response_text)
+                return analysis
+            except json.JSONDecodeError:
+                logger.warning("Failed to parse LLM response as JSON, returning as summary")
+                return {
+                    "root_cause": "Analysis completed",
+                    "summary": response_text,
+                    "error_chain": [],
+                    "affected_components": [],
+                    "suggested_fixes": [],
+                    "patterns_detected": [],
+                    "severity_assessment": "medium"
+                }
+
+        except Exception as e:
+            logger.error(f"Error analyzing logs with LLM: {str(e)}")
+            return self._generate_fallback_log_analysis(log_content)
+
+    def _generate_fallback_log_analysis(self, log_content: str) -> Dict:
+        """Generate a basic analysis when LLM is not available."""
+        # Count errors and warnings from content
+        error_count = log_content.lower().count('error')
+        warning_count = log_content.lower().count('warn')
+
+        severity = "critical" if error_count > 5 else "high" if error_count > 2 else "medium"
+
+        return {
+            "root_cause": "Unable to perform AI analysis - LLM service unavailable",
+            "summary": f"Log file contains {error_count} error(s) and {warning_count} warning(s). Manual review recommended.",
+            "error_chain": [],
+            "affected_components": [],
+            "suggested_fixes": [
+                {
+                    "priority": "high",
+                    "action": "Review the error contexts manually",
+                    "rationale": "AI analysis unavailable, manual investigation required"
+                }
+            ],
+            "patterns_detected": [],
+            "severity_assessment": severity
+        }
     
     def _format_recommendations(self, recommendations: List[str]) -> str:
         if not recommendations:

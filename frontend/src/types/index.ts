@@ -21,6 +21,45 @@ export interface FailureLogs {
   error_contexts: ErrorContext[];
   summary: string | null;
   total_errors_found: number;
+  warnings_found: number;
+  stack_traces: StackTrace[];
+  log_metadata: LogMetadata;
+  ai_analysis?: AILogAnalysis;
+}
+
+export interface StackTrace {
+  start_line: number;
+  lines: LogLine[];
+}
+
+export interface LogMetadata {
+  total_lines: number;
+  first_timestamp: string | null;
+  last_timestamp: string | null;
+  error_timeline: ErrorTimelineEvent[];
+}
+
+export interface ErrorTimelineEvent {
+  line_number: number;
+  timestamp: string | null;
+  level: string;
+  message: string;
+}
+
+export interface AILogAnalysis {
+  root_cause: string;
+  error_chain: string[];
+  affected_components: string[];
+  suggested_fixes: SuggestedFix[];
+  patterns_detected: string[];
+  severity_assessment: string;
+  summary: string;
+}
+
+export interface SuggestedFix {
+  priority: string;
+  action: string;
+  rationale: string;
 }
 
 export interface ErrorContext {
