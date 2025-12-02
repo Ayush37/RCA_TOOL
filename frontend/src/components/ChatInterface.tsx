@@ -110,15 +110,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       if (response.metrics_summary) {
         setShowMetrics(true);
       }
-    } catch (error) {
+    } catch (caughtError) {
       setMessages((prev) => prev.filter((msg) => msg.id !== typingMessage.id));
 
-      let errorMessage = 'An error occurred';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'string') {
-        errorMessage = error;
-      }
+      const errorMessage = caughtError instanceof Error
+        ? caughtError.message
+        : typeof caughtError === 'string'
+          ? caughtError
+          : 'An error occurred';
 
       setError(errorMessage);
 
