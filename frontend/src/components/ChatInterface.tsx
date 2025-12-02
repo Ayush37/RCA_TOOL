@@ -113,12 +113,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     } catch (error) {
       setMessages((prev) => prev.filter((msg) => msg.id !== typingMessage.id));
 
-      const err = error as Error | string | unknown;
       let errorMessage = 'An error occurred';
-      if (err instanceof Error) {
-        errorMessage = err.message;
-      } else if (typeof err === 'string') {
-        errorMessage = err;
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
       }
 
       setError(errorMessage);
