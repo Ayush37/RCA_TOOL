@@ -5,7 +5,7 @@ from typing import Dict, List, Any
 import logging
 from openai import AzureOpenAI
 from azure.identity import CertificateCredential
-from datetime import datetime
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +29,8 @@ class AzureAIServiceCert:
         
         self.client = None
         self.access_token = None
+        self.token_expiry = None
+        self.credential = None
         
         if self.endpoint and self.client_id and self.tenant_id:
             try:
@@ -37,17 +39,15 @@ class AzureAIServiceCert:
             except Exception as e:
                 logger.error(f"Failed to initialize Azure OpenAI client: {str(e)}")
     
-    def get_access_token(self):
-        """Get Azure AD access token using certificate authentication"""
-        try:
-            logger.debug("Getting access token...")
+    def _initialize_credential(self):
+        """Initialize the credential object once"""
+        if not self.credential:
+            logger.debug("Initializing certificate credential...")
             logger.debug(f"Certificate path: {self.cert_path}")
             
             if not os.path.exists(self.cert_path):
                 logger.error(f"Certificate file does not exist at: {self.cert_path}")
                 raise FileNotFoundError(f"Certificate file not found: {self.cert_path}")
-            
-            scope = "https://cognitiveservices.azure.com/.default"
             
             # Check environment variables
             for env_var in ["AZURE_SPN_CLIENT_ID", "AZURE_TENANT_ID"]:
@@ -55,17 +55,33 @@ class AzureAIServiceCert:
                     logger.error(f"Environment variable {env_var} is not set")
                     raise ValueError(f"Environment variable {env_var} is not set")
             
-            credential = CertificateCredential(
+            self.credential = CertificateCredential(
                 client_id=self.client_id,
                 certificate_path=self.cert_path,
                 tenant_id=self.tenant_id,
                 logging_enable=True  # Enable Azure SDK logging
             )
+            logger.debug("Certificate credential initialized successfully")
+
+    def get_access_token(self):
+        """Get Azure AD access token using certificate authentication"""
+        try:
+            logger.debug("Getting access token...")
             
-            access_token = credential.get_token(scope).token
-            logger.debug("Access token obtained successfully")
+            # Initialize credential if not already done
+            self._initialize_credential()
             
-            return access_token
+            scope = "https://cognitiveservices.azure.com/.default"
+            
+            token_response = self.credential.get_token(scope)
+            self.access_token = token_response.token
+            
+            # Azure tokens typically expire in 1 hour, we'll refresh 5 minutes before expiry
+            self.token_expiry = datetime.now() + timedelta(minutes=55)
+            
+            logger.debug(f"Access token obtained successfully, expires at: {self.token_expiry}")
+            
+            return self.access_token
         except Exception as e:
             logger.error(f"Error getting access token: {str(e)}")
             logger.error(traceback.format_exc())
@@ -74,7 +90,11 @@ class AzureAIServiceCert:
     def _initialize_client(self):
         """Initialize the Azure OpenAI client with certificate authentication"""
         try:
-            # Get access token
+            # Reset credential if needed to ensure fresh start
+            if not self.credential:
+                self._initialize_credential()
+            
+            # Get fresh access token
             self.access_token = self.get_access_token()
             
             # Initialize Azure OpenAI client
@@ -89,8 +109,14 @@ class AzureAIServiceCert:
                     "user_sid": self.user_sid
                 }
             )
+            logger.info("Azure OpenAI client initialized successfully with fresh token")
         except Exception as e:
             logger.error(f"Failed to initialize client: {str(e)}")
+            logger.error(traceback.format_exc())
+            # Reset credential for next attempt
+            self.credential = None
+            self.access_token = None
+            self.token_expiry = None
             raise
     
     def is_configured(self) -> bool:
@@ -141,14 +167,23 @@ class AzureAIServiceCert:
                 return self._generate_fallback_response(analysis, user_query)
     
     def _refresh_token_if_needed(self):
-        """Refresh the access token if needed (implement token expiry check if required)"""
-        # For now, we'll get a fresh token for each request
-        # In production, you'd want to cache and check expiry
+        """Refresh the access token if it's expired or about to expire"""
         try:
-            self.access_token = self.get_access_token()
-            self.client.default_headers["Authorization"] = f"Bearer {self.access_token}"
+            # Check if token is missing or expired
+            if not self.access_token or not self.token_expiry or datetime.now() >= self.token_expiry:
+                logger.info("Token expired or missing, refreshing...")
+                self.access_token = self.get_access_token()
+                
+                # Update the client headers with the new token
+                if self.client:
+                    self.client.default_headers["Authorization"] = f"Bearer {self.access_token}"
+                    logger.info("Token refreshed successfully")
+            else:
+                logger.debug(f"Token still valid, expires at: {self.token_expiry}")
         except Exception as e:
             logger.error(f"Failed to refresh token: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
     
     def _prepare_context(self, analysis: Dict, metrics: Dict) -> Dict:
         context = {
@@ -395,6 +430,9 @@ Remember:
             return self._generate_fallback_log_analysis(log_content)
 
         try:
+            # Refresh token if needed before making the API call
+            self._refresh_token_if_needed()
+            
             prompt = f"""Analyze the following application failure logs and provide a detailed technical analysis.
 
 {log_content}
@@ -460,6 +498,56 @@ Always respond with valid JSON only, no markdown formatting."""},
 
         except Exception as e:
             logger.error(f"Error analyzing logs with LLM: {str(e)}")
+            logger.error(traceback.format_exc())
+            
+            # Try to reinitialize the client and retry once
+            if "401" in str(e) or "unauthorized" in str(e).lower() or "token" in str(e).lower():
+                try:
+                    logger.info("Token error detected, reinitializing client and retrying...")
+                    self._initialize_client()
+                    
+                    response = self.client.chat.completions.create(
+                        model=self.deployment,
+                        messages=[
+                            {"role": "system", "content": """You are an expert DevOps engineer and log analyst.
+Analyze application logs to identify root causes, patterns, and provide actionable recommendations.
+Focus on:
+1. Identifying the primary root cause
+2. Understanding the error propagation chain
+3. Suggesting specific, actionable fixes
+4. Detecting patterns that might indicate systemic issues
+Always respond with valid JSON only, no markdown formatting."""},
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature=0.3,
+                        max_tokens=1500
+                    )
+                    
+                    response_text = response.choices[0].message.content.strip()
+                    
+                    # Try to parse JSON response
+                    import json
+                    try:
+                        if response_text.startswith('```'):
+                            response_text = response_text.split('```')[1]
+                            if response_text.startswith('json'):
+                                response_text = response_text[4:]
+                        analysis = json.loads(response_text)
+                        return analysis
+                    except json.JSONDecodeError:
+                        logger.warning("Failed to parse LLM response as JSON on retry, returning as summary")
+                        return {
+                            "root_cause": "Analysis completed",
+                            "summary": response_text,
+                            "error_chain": [],
+                            "affected_components": [],
+                            "suggested_fixes": [],
+                            "patterns_detected": [],
+                            "severity_assessment": "medium"
+                        }
+                except Exception as retry_error:
+                    logger.error(f"Retry also failed: {str(retry_error)}")
+            
             return self._generate_fallback_log_analysis(log_content)
 
     def _generate_fallback_log_analysis(self, log_content: str) -> Dict:
