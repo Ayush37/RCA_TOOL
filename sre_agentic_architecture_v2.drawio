@@ -1,0 +1,625 @@
+<mxfile host="app.diagrams.net" modified="2025-01-07T12:00:00.000Z" agent="Claude" version="21.0.0" type="device">
+  <diagram name="SRE Agentic Solution Architecture v2" id="sre-agentic-arch-v2">
+    <mxGraphModel dx="1900" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" math="0" shadow="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="SRE Intelligent Agentic Platform" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#1a365d;" vertex="1" parent="1">
+          <mxGeometry x="550" y="15" width="700" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Multi-Agent AI System for Batch Operations Monitoring, Root Cause Analysis &amp; Automated Remediation" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=2;fontColor=#4a5568;" vertex="1" parent="1">
+          <mxGeometry x="450" y="55" width="900" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== USER LAYER ==================== -->
+        <mxCell id="user-layer-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f4f8;strokeColor=#0077b6;strokeWidth=2;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="90" width="1640" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="user-layer-label" value="USER INTERFACE LAYER" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#0077b6;" vertex="1" parent="1">
+          <mxGeometry x="90" y="95" width="180" height="18" as="geometry" />
+        </mxCell>
+        
+        <!-- User Icon -->
+        <mxCell id="user-icon" value="" style="shape=actor;whiteSpace=wrap;html=1;fillColor=#0077b6;strokeColor=#005f8a;" vertex="1" parent="1">
+          <mxGeometry x="130" y="120" width="35" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="user-label" value="SRE Team" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="112" y="175" width="70" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Web UI -->
+        <mxCell id="web-ui" value="Custom Web UI&#xa;(Conversational Chat Interface)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0077b6;strokeWidth=2;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="115" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Sample Queries Box -->
+        <mxCell id="sample-queries" value="Sample User Queries:&#xa;• &quot;Why did Derivatives batch fail last night?&quot;&#xa;• &quot;What's the EMR cost for this week?&quot;&#xa;• &quot;Fix the DAG failure for Securities batch&quot;&#xa;• &quot;Show DQ issues for 6G Reports on 2025-01-06&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f9ff;strokeColor=#90cdf4;strokeWidth=1;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="500" y="100" width="320" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Asset Classes -->
+        <mxCell id="asset-classes-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d69e2e;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="870" y="100" width="420" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="asset-label" value="ASSET CLASSES SUPPORTED" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontColor=#92400e;" vertex="1" parent="1">
+          <mxGeometry x="970" y="103" width="220" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="asset-derivatives" value="Derivatives" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fbbf24;strokeColor=#d69e2e;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="122" width="75" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="asset-securities" value="Securities" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fbbf24;strokeColor=#d69e2e;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="960" y="122" width="75" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="asset-6g" value="6G Reports" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fbbf24;strokeColor=#d69e2e;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="122" width="75" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="asset-deposits" value="Deposits" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fbbf24;strokeColor=#d69e2e;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="122" width="75" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="asset-stress" value="STRESS&#xa;REPORTS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fbbf24;strokeColor=#d69e2e;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="122" width="75" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="asset-more" value="+ Additional Asset Classes as needed" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#92400e;" vertex="1" parent="1">
+          <mxGeometry x="960" y="158" width="220" height="15" as="geometry" />
+        </mxCell>
+
+        <!-- Tech Stack Summary -->
+        <mxCell id="tech-stack" value="🔧 Tech Stack: OpenAI GPT-4 | Python | REST APIs | AWS | Snowflake" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#3b82f6;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1340" y="115" width="360" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow from User to Web UI -->
+        <mxCell id="arrow-user-ui" value="" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#0077b6;strokeWidth=2;" edge="1" parent="1" source="user-icon" target="web-ui">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== ORCHESTRATOR LAYER ==================== -->
+        <mxCell id="orch-layer-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#22c55e;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="230" width="1640" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-layer-label" value="ORCHESTRATION LAYER" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#22c55e;" vertex="1" parent="1">
+          <mxGeometry x="90" y="235" width="180" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Main Orchestrator Agent -->
+        <mxCell id="main-orchestrator" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#22c55e;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="200" y="258" width="520" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-brain" value="🧠" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;" vertex="1" parent="1">
+          <mxGeometry x="210" y="262" width="35" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-title" value="MAIN AI ORCHESTRATOR AGENT" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#166534;" vertex="1" parent="1">
+          <mxGeometry x="245" y="265" width="280" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-functions" value="▸ Query Understanding &amp; Intent Classification&#xa;▸ Dynamic Agent Routing &amp; Selection&#xa;▸ Multi-Agent Coordination &amp; Parallel Execution&#xa;▸ Response Aggregation &amp; Intelligent Summarization" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="215" y="288" width="290" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-openai" value="OpenAI&#xa;GPT-4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;strokeColor=#059669;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="275" width="60" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Prompt Store -->
+        <mxCell id="prompt-store" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ecfdf5;strokeColor=#22c55e;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="780" y="258" width="260" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="prompt-store-title" value="📝 PROMPT &amp; CONTEXT STORE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#166534;" vertex="1" parent="1">
+          <mxGeometry x="790" y="262" width="240" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="prompt-store-details" value="• Conversation History &amp; Context&#xa;• Agent-Specific Prompt Templates&#xa;• Domain Knowledge Embeddings&#xa;• Previous Query Results Cache&#xa;• User Preferences &amp; Patterns" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="790" y="282" width="240" height="68" as="geometry" />
+        </mxCell>
+
+        <!-- Orchestrator Capabilities -->
+        <mxCell id="orch-capabilities" value="Intelligent Capabilities:&#xa;✓ Parallel agent execution&#xa;✓ Context-aware routing&#xa;✓ Cross-agent data sharing&#xa;✓ Fallback &amp; error handling&#xa;✓ Human escalation triggers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#6ee7b7;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="258" width="170" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Routing Logic -->
+        <mxCell id="routing-logic" value="Query Routing Logic:&#xa;Cost queries → Cost Bot&#xa;Failures/Slowness → RCA + Log Bot&#xa;Data issues → DQ Bot&#xa;Status/SLA → Generic Q&amp;A&#xa;Fix requests → Self-Healing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#6ee7b7;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="258" width="170" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow from Web UI to Orchestrator -->
+        <mxCell id="arrow-ui-orch" value="User Query" style="endArrow=classic;html=1;strokeColor=#0077b6;strokeWidth=2;fontStyle=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="200" as="sourcePoint" />
+            <mxPoint x="400" y="258" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-orch-ui" value="AI Response" style="endArrow=classic;html=1;strokeColor=#22c55e;strokeWidth=2;fontStyle=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="450" y="258" as="sourcePoint" />
+            <mxPoint x="450" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== SPECIALIST AGENTS LAYER ==================== -->
+        <mxCell id="agents-layer-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3f2;strokeColor=#ef4444;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="390" width="1640" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="agents-layer-label" value="SPECIALIST AGENTS LAYER (Information &amp; Analysis)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#ef4444;" vertex="1" parent="1">
+          <mxGeometry x="90" y="395" width="320" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- RCA Agent -->
+        <mxCell id="rca-agent" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#dc2626;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="95" y="420" width="260" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="rca-icon" value="🔍" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="100" y="423" width="25" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="rca-title" value="RCA BOT" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#991b1b;" vertex="1" parent="1">
+          <mxGeometry x="125" y="423" width="120" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="rca-desc" value="Root Cause Analysis for batch&#xa;failures and performance issues" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="100" y="445" width="180" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="rca-features" value="▸ Infrastructure Issue Detection&#xa;▸ Business Metric Analysis&#xa;▸ Log Pattern Recognition&#xa;▸ Historical RCA Lookup&#xa;▸ Auto-document to Confluence" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="100" y="473" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="rca-openai" value="OpenAI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dc2626;strokeColor=#b91c1c;fontColor=#ffffff;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="425" width="45" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="rca-sources" value="Splunk | S3 | Snowflake | Confluence" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=8;fontStyle=2;fontColor=#991b1b;fillColor=#fecaca;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="550" width="180" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Log Analysis Agent -->
+        <mxCell id="log-agent" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef9c3;strokeColor=#ca8a04;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="370" y="420" width="260" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="log-icon" value="📋" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="375" y="423" width="25" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="log-title" value="LOG ANALYSIS BOT" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#854d0e;" vertex="1" parent="1">
+          <mxGeometry x="400" y="423" width="150" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="log-desc" value="Parse &amp; analyze logs for failures&#xa;and slowness patterns" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="375" y="445" width="180" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="log-features" value="▸ AWS Native Issue Detection&#xa;▸ Business Logic Error Analysis&#xa;▸ Error Pattern Classification&#xa;▸ Performance Bottleneck ID&#xa;▸ Anomaly Detection" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="375" y="473" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="log-openai" value="OpenAI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ca8a04;strokeColor=#a16207;fontColor=#ffffff;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="575" y="425" width="45" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="log-sources" value="Splunk | S3 Logs" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=8;fontStyle=2;fontColor=#854d0e;fillColor=#fef08a;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="550" width="120" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- DQ Agent -->
+        <mxCell id="dq-agent" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#6366f1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="645" y="420" width="260" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="dq-icon" value="📊" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="650" y="423" width="25" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="dq-title" value="DATA QUALITY BOT" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#4338ca;" vertex="1" parent="1">
+          <mxGeometry x="675" y="423" width="150" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="dq-desc" value="Detect data discrepancies &amp;&#xa;quality issues in data flow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="650" y="445" width="180" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="dq-features" value="▸ T vs T-1 Comparison Analysis&#xa;▸ Hierarchy-based Table Tracing&#xa;▸ Data Flow Gap Detection&#xa;▸ Bad Data Identification&#xa;▸ Lineage-aware Validation" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="650" y="473" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="dq-openai" value="OpenAI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6366f1;strokeColor=#4f46e5;fontColor=#ffffff;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="850" y="425" width="45" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="dq-sources" value="Snowflake (Code-defined lineage)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=8;fontStyle=2;fontColor=#4338ca;fillColor=#c7d2fe;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="665" y="550" width="170" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Generic Q&A Agent -->
+        <mxCell id="qa-agent" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="920" y="420" width="260" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="qa-icon" value="💬" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="925" y="423" width="25" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="qa-title" value="GENERIC Q&amp;A BOT" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#7e22ce;" vertex="1" parent="1">
+          <mxGeometry x="950" y="423" width="150" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="qa-desc" value="Quick answers on batch status,&#xa;SLAs, and job information" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="925" y="445" width="180" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="qa-features" value="▸ Real-time Job Status Lookup&#xa;▸ ETA &amp; Completion Predictions&#xa;▸ SLA Monitoring &amp; Alerts&#xa;▸ Historical Trend Analysis&#xa;▸ Cross-batch Dependencies" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="925" y="473" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="qa-openai" value="OpenAI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9333ea;strokeColor=#7e22ce;fontColor=#ffffff;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1125" y="425" width="45" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="qa-sources" value="Airflow | Snowflake Metrics" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=8;fontStyle=2;fontColor=#7e22ce;fillColor=#e9d5ff;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="940" y="550" width="140" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- NEW: Cost & Expenditure Agent -->
+        <mxCell id="cost-agent" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1195" y="420" width="260" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-icon" value="💰" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="423" width="25" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-title" value="COST &amp; EXPENDITURE BOT" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#047857;" vertex="1" parent="1">
+          <mxGeometry x="1225" y="423" width="180" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-new-badge" value="NEW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#059669;strokeColor=#047857;fontColor=#ffffff;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="425" width="35" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-desc" value="AWS cost analysis &amp; expenditure&#xa;tracking across all dimensions" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="445" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-features" value="▸ Cost by Service (EMR, RDS, EC2...)&#xa;▸ Cost by Asset Class&#xa;▸ Cost by Environment (Prod/UAT)&#xa;▸ Cost by Team / Cost Center&#xa;▸ Day/Week/Month Aggregations" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="473" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-openai" value="OpenAI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#059669;strokeColor=#047857;fontColor=#ffffff;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="448" width="45" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-sources" value="AWS Cost Explorer | CloudWatch API" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=8;fontStyle=2;fontColor=#047857;fillColor=#a7f3d0;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="550" width="190" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Inter-Agent Communication Arrows -->
+        <mxCell id="inter-agent-1" value="" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#f97316;strokeWidth=2;dashed=1;dashPattern=5 3;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="355" y="500" as="sourcePoint" />
+            <mxPoint x="370" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="inter-agent-2" value="" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#f97316;strokeWidth=2;dashed=1;dashPattern=5 3;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="630" y="500" as="sourcePoint" />
+            <mxPoint x="645" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="inter-agent-3" value="" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#f97316;strokeWidth=2;dashed=1;dashPattern=5 3;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="905" y="500" as="sourcePoint" />
+            <mxPoint x="920" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="inter-agent-4" value="" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#f97316;strokeWidth=2;dashed=1;dashPattern=5 3;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1180" y="500" as="sourcePoint" />
+            <mxPoint x="1195" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Inter-agent label -->
+        <mxCell id="inter-agent-label" value="⟷ Inter-Agent Communication" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=3;fontColor=#f97316;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="395" width="180" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Arrows from Orchestrator to Agents -->
+        <mxCell id="arrow-orch-rca" value="" style="endArrow=classic;html=1;strokeColor=#22c55e;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="360" as="sourcePoint" />
+            <mxPoint x="225" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-orch-log" value="" style="endArrow=classic;html=1;strokeColor=#22c55e;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="360" as="sourcePoint" />
+            <mxPoint x="500" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-orch-dq" value="" style="endArrow=classic;html=1;strokeColor=#22c55e;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="360" as="sourcePoint" />
+            <mxPoint x="775" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-orch-qa" value="" style="endArrow=classic;html=1;strokeColor=#22c55e;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="600" y="360" as="sourcePoint" />
+            <mxPoint x="1050" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-orch-cost" value="" style="endArrow=classic;html=1;strokeColor=#22c55e;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="360" as="sourcePoint" />
+            <mxPoint x="1325" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== REMEDIATION LAYER (NEW) ==================== -->
+        <mxCell id="remediation-layer-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdf4ff;strokeColor=#c026d3;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="80" y="620" width="1640" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="remediation-layer-label" value="REMEDIATION &amp; SELF-HEALING LAYER (Automated Actions with Human Approval)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#c026d3;" vertex="1" parent="1">
+          <mxGeometry x="90" y="625" width="450" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="new-layer-badge" value="NEW LAYER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c026d3;strokeColor=#a21caf;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="623" width="70" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Self-Healing Bot -->
+        <mxCell id="healing-bot" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fae8ff;strokeColor=#d946ef;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="120" y="655" width="300" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="healing-icon" value="🔧" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;" vertex="1" parent="1">
+          <mxGeometry x="130" y="660" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="healing-title" value="SELF-HEALING BOT" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#a21caf;" vertex="1" parent="1">
+          <mxGeometry x="160" y="662" width="180" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="healing-desc" value="Automated remediation based on&#xa;anomaly detection in live metrics" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="130" y="685" width="200" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="healing-triggers" value="Triggers: Metric Anomalies | DAG Failures" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="130" y="710" width="230" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="healing-source" value="Source: Snowflake Metrics | Airflow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="130" y="725" width="200" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="healing-openai" value="OpenAI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d946ef;strokeColor=#c026d3;fontColor=#ffffff;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="365" y="660" width="45" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow from Orchestrator to Self-Healing -->
+        <mxCell id="arrow-orch-healing" value="Fix Request" style="endArrow=classic;html=1;strokeColor=#c026d3;strokeWidth=2;fontStyle=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="350" y="360" as="sourcePoint" />
+            <mxPoint x="270" y="655" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="200" y="400" />
+              <mxPoint x="100" y="500" />
+              <mxPoint x="100" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Human Approval -->
+        <mxCell id="human-approval" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#eab308;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="500" y="655" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="approval-icon" value="👤" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;" vertex="1" parent="1">
+          <mxGeometry x="510" y="660" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="approval-title" value="HUMAN APPROVAL" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#a16207;" vertex="1" parent="1">
+          <mxGeometry x="540" y="662" width="150" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="approval-desc" value="Human-in-the-loop validation&#xa;before executing remediation&#xa;actions on infrastructure" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="510" y="690" width="180" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="approval-badge" value="REQUIRED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eab308;strokeColor=#ca8a04;fontColor=#ffffff;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="735" width="55" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow from Healing to Approval -->
+        <mxCell id="arrow-healing-approval" value="Request&#xa;Approval" style="endArrow=classic;html=1;strokeColor=#d946ef;strokeWidth=2;fontSize=9;fontStyle=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="420" y="705" as="sourcePoint" />
+            <mxPoint x="500" y="705" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Available Actions -->
+        <mxCell id="actions-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#3b82f6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="780" y="655" width="240" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="actions-icon" value="⚡" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="790" y="658" width="25" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="actions-title" value="AVAILABLE ACTIONS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#1d4ed8;" vertex="1" parent="1">
+          <mxGeometry x="815" y="660" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="actions-list" value="▸ Infrastructure Restarts (EC2, ECS, EMR)&#xa;▸ Airflow DAG Retries&#xa;▸ Storage Cleanup &amp; Optimization&#xa;▸ Auto-scaling Adjustments" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="790" y="685" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow from Approval to Actions -->
+        <mxCell id="arrow-approval-actions" value="Approved" style="endArrow=classic;html=1;strokeColor=#22c55e;strokeWidth=2;fontSize=9;fontStyle=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="705" as="sourcePoint" />
+            <mxPoint x="780" y="705" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Audit Log -->
+        <mxCell id="audit-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#ef4444;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="655" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-icon" value="📝" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="658" width="25" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-title" value="AUDIT LOG (RDS)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#dc2626;" vertex="1" parent="1">
+          <mxGeometry x="1135" y="660" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-desc" value="▸ All actions logged&#xa;▸ Approval timestamps&#xa;▸ Execution results&#xa;▸ Rollback history&#xa;▸ Compliance tracking" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="685" width="150" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow from Actions to Audit -->
+        <mxCell id="arrow-actions-audit" value="Log" style="endArrow=classic;html=1;strokeColor=#ef4444;strokeWidth=2;fontSize=9;fontStyle=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1020" y="705" as="sourcePoint" />
+            <mxPoint x="1100" y="705" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Remediation Flow Summary -->
+        <mxCell id="remediation-flow" value="FLOW: Anomaly Detected → Self-Healing Bot Analyzes → Proposes Action → Human Approves → Execute → Audit Log" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5d0fe;strokeColor=#d946ef;fontSize=9;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="680" width="350" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== DATA SOURCES LAYER ==================== -->
+        <mxCell id="data-layer-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="800" width="1640" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="data-layer-label" value="DATA SOURCES &amp; INTEGRATION LAYER" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#64748b;" vertex="1" parent="1">
+          <mxGeometry x="90" y="805" width="280" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Splunk -->
+        <mxCell id="splunk" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#333333;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="100" y="835" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="splunk-title" value="SPLUNK" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#65a637;" vertex="1" parent="1">
+          <mxGeometry x="100" y="840" width="160" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="splunk-desc" value="Log Aggregation &amp; Search&#xa;Application &amp; System Logs" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="100" y="862" width="160" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- S3 -->
+        <mxCell id="s3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ff9900;strokeColor=#cc7a00;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="280" y="835" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-title" value="AWS S3" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="280" y="840" width="160" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-desc" value="Logs Directory&#xa;Raw Log Storage" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="280" y="862" width="160" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Snowflake -->
+        <mxCell id="snowflake" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#29b5e8;strokeColor=#1a8bb8;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="460" y="835" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="snowflake-title" value="❄️ SNOWFLAKE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="460" y="840" width="220" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="snowflake-desc" value="Central Metric Store&#xa;Infra | Business | DQ Metrics" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="460" y="862" width="220" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Airflow -->
+        <mxCell id="airflow" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#017cee;strokeColor=#0066cc;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="700" y="835" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="airflow-title" value="APACHE AIRFLOW" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="700" y="840" width="160" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="airflow-desc" value="Workflow Orchestration&#xa;DAGs | Status | SLAs" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="700" y="862" width="160" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Confluence -->
+        <mxCell id="confluence" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0052cc;strokeColor=#003d99;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="880" y="835" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="confluence-title" value="CONFLUENCE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="880" y="840" width="160" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="confluence-desc" value="Knowledge Base&#xa;Historical RCAs | Runbooks" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="880" y="862" width="160" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- NEW: AWS Cost Explorer -->
+        <mxCell id="cost-explorer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#232f3e;strokeColor=#ff9900;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="835" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-explorer-title" value="AWS COST EXPLORER" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#ff9900;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="840" width="160" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-explorer-desc" value="Cost &amp; Usage Data&#xa;Billing Analytics" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="862" width="160" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-explorer-new" value="NEW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ff9900;strokeColor=#cc7a00;fontColor=#232f3e;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="838" width="25" height="15" as="geometry" />
+        </mxCell>
+
+        <!-- NEW: CloudWatch -->
+        <mxCell id="cloudwatch" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#232f3e;strokeColor=#ff4f8b;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="835" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cloudwatch-title" value="CLOUDWATCH API" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#ff4f8b;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="840" width="160" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cloudwatch-desc" value="Metrics &amp; Monitoring&#xa;Resource Utilization" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="862" width="160" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="cloudwatch-new" value="NEW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ff4f8b;strokeColor=#cc3f70;fontColor=#ffffff;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1370" y="838" width="25" height="15" as="geometry" />
+        </mxCell>
+
+        <!-- RDS Audit -->
+        <mxCell id="rds" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#232f3e;strokeColor=#3b48cc;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="835" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="rds-title" value="AWS RDS" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#3b48cc;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="840" width="160" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="rds-desc" value="Audit Database&#xa;Action Logs &amp; Compliance" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="862" width="160" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="rds-new" value="NEW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3b48cc;strokeColor=#2f3aa3;fontColor=#ffffff;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1550" y="838" width="25" height="15" as="geometry" />
+        </mxCell>
+
+        <!-- Feedback Loop Arrow -->
+        <mxCell id="feedback-arrow" value="" style="endArrow=classic;html=1;strokeColor=#dc2626;strokeWidth=3;curved=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="580" as="sourcePoint" />
+            <mxPoint x="960" y="835" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="150" y="610" />
+              <mxPoint x="90" y="750" />
+              <mxPoint x="500" y="810" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="feedback-label" value="🔄 Feedback Loop: RCA Bot auto-documents findings to Confluence for future reference" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=1;fontColor=#dc2626;" vertex="1" parent="1">
+          <mxGeometry x="200" y="795" width="420" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Connection Matrix -->
+        <mxCell id="matrix-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#94a3b8;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="920" width="700" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="matrix-title" value="AGENT → DATA SOURCE MAPPING" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="110" y="925" width="250" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="matrix-content" value="RCA Bot → Splunk + S3 + Snowflake + Confluence (R/W)&#xa;Log Analysis Bot → Splunk + S3 Logs&#xa;DQ Bot → Snowflake (Central Metric Store)&#xa;Generic Q&amp;A Bot → Airflow + Snowflake&#xa;Cost Bot → AWS Cost Explorer + CloudWatch API&#xa;Self-Healing Bot → Snowflake Metrics + Airflow → RDS (Audit)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="110" y="948" width="680" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Key Benefits Box -->
+        <mxCell id="benefits-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ecfdf5;strokeColor=#10b981;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="920" width="420" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="benefits-title" value="KEY BUSINESS BENEFITS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontColor=#065f46;" vertex="1" parent="1">
+          <mxGeometry x="830" y="925" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="benefits-content" value="✓ Reduced MTTR through automated RCA &amp; self-healing&#xa;✓ Unified view across all asset classes &amp; cost dimensions&#xa;✓ Proactive issue resolution before business impact&#xa;✓ Self-learning through Confluence feedback loop&#xa;✓ Complete audit trail for compliance &amp; governance&#xa;✓ Natural language interface reducing operational burden" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="830" y="948" width="400" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e2e8f0;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="920" width="450" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="LEGEND" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="925" width="60" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-solid" value="━━ Solid Green: Query/Response Flow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#22c55e;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="945" width="200" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-dashed" value="┄┄ Dashed Orange: Inter-Agent Communication" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#f97316;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="962" width="230" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-feedback" value="━━ Red Arrow: Feedback Loop to Confluence" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#dc2626;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="979" width="220" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-remediation" value="━━ Purple: Self-Healing Remediation Flow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#c026d3;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="996" width="220" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-new" value="NEW badges indicate additions in v2.0" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="945" width="200" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-colors" value="Each agent has unique color coding" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#374151;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="962" width="200" height="15" as="geometry" />
+        </mxCell>
+
+        <!-- Version/Footer -->
+        <mxCell id="footer" value="SRE Intelligent Agentic Platform | Architecture v2.0 | JPMorgan Chase | January 2025" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;fontColor=#94a3b8;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="1040" width="400" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
